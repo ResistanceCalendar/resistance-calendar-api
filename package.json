@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "API for Resistance Calendar Events",
   "main": "server.js",
+  "engines": {
+    "node": "6.10.0"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
