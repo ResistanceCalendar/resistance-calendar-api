@@ -1,0 +1,22 @@
+{
+  "name": "resistance-calendar-api",
+  "version": "1.0.0",
+  "description": "API for Resistance Calendar Events",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ResistanceCalendar/resistance-calendar-api.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ResistanceCalendar/resistance-calendar-api/issues"
+  },
+  "homepage": "https://github.com/ResistanceCalendar/resistance-calendar-api#readme",
+  "dependencies": {
+    "hapi": "^16.1.0"
+  }
+}
