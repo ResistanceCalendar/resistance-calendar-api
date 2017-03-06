@@ -3,7 +3,6 @@
 'use strict';
 
 const Hapi = require('hapi');
-const FB = require('fbgraph');
 
 // Create a server with a host and port
 const server = new Hapi.Server();

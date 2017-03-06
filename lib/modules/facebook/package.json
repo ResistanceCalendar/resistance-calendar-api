@@ -1,7 +1,4 @@
 {
-  "name": "resistance-calendar-facebook",
-  "version": "1.0.0",
-  "dependencies": {
-    "fbgraph": "^1.4.1"
-  }
+  "name": "resistance-calendar-module-facebook",
+  "version": "1.0.0"
 }
