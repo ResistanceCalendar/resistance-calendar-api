@@ -24,7 +24,6 @@
     "fbgraph": "^1.4.1"
   },
   "plugins": {
-    "./lib/controllers/facebook": null,
     "./lib/modules/facebook": null
   }
 }

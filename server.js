@@ -23,8 +23,9 @@ server.route({
 const plugins = [{
     register: require('./lib/modules/facebook')
 }]
+
+// Start the server after plugin registration
 server.register(plugins, function() {
-  // Start the server
   server.start((err) => {
         if (err) {
             throw err;
