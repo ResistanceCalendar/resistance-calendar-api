@@ -21,7 +21,7 @@ server.route({
 
 // Register the additional plugins
 const plugins = [{
-    register: require('./lib/modules/facebook')
+    register: require('./api')
 }]
 
 // Start the server after plugin registration
