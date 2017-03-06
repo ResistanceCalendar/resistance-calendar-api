@@ -21,7 +21,7 @@ server.route({
 
 // Register the additional plugins
 const plugins = [{
-    register: require('./api')
+    register: require('./routes')
 }]
 
 // Start the server after plugin registration
