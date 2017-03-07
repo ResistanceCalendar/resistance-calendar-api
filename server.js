@@ -15,16 +15,21 @@ server.route({
     method: 'GET',
     path:'/',
     handler: function (request, reply) {
-
         return reply('hello world');
     }
 });
 
-// Start the server
-server.start((err) => {
+// Register the additional plugins
+const plugins = [{
+    register: require('./routes')
+}]
 
-    if (err) {
-        throw err;
-    }
-    console.log('Server running at:', server.info.uri);
+// Start the server after plugin registration
+server.register(plugins, function() {
+  server.start((err) => {
+        if (err) {
+            throw err;
+        }
+        console.log('Server running at:', server.info.uri);
+    });
 });
