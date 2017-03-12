@@ -1,9 +1,12 @@
-var Mongoose = require('mongoose'),
+var mongoose = require('mongoose'),
     config = require('./config');
-var promise_options = { promiseLibrary: require('bluebird') };
-var db = Mongoose.createConnection(config.mongoUri, promise_options);
+var promise_options = { 
+	promiseLibrary: require('bluebird') 
+};
 
-mongoose.connect(config.monngoUri);
+var db = mongoose.createConnection(config.mongoUri, promise_options);
+
+mongoose.connect(config.mongoUri);
 
 db.on('error', console.error.bind(console, 'connection error'));
 db.once('open', function callback() {

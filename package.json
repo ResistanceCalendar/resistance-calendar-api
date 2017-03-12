@@ -21,8 +21,11 @@
   "homepage": "https://github.com/ResistanceCalendar/resistance-calendar-api#readme",
   "dependencies": {
     "bluebird": "^3.5.0",
+    "boom": "^4.2.0",
     "fbgraph": "^1.4.1",
     "hapi": "^16.1.0",
+    "joi": "^10.2.2",
+    "lodash": "^4.17.4",
     "mongoose": "^4.8.6"
   },
   "plugins": {
