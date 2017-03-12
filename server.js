@@ -2,11 +2,13 @@
 
 'use strict';
 
-const Hapi = require('hapi');
+const Hapi = require('hapi'),
+Db = require('./database');
 
 // Create a server with a host and port
 const server = new Hapi.Server();
 server.connection({
+    host: 'localhost',
     port: process.env.PORT || 8000
 });
 
@@ -22,12 +24,13 @@ server.route({
 // Register the additional plugins
 const plugins = [{
     register: require('./routes')
-}]
+}];
 
 // Start the server after plugin registration
 server.register(plugins, function() {
   server.start((err) => {
         if (err) {
+            console.error(err);
             throw err;
         }
         console.log('Server running at:', server.info.uri);
