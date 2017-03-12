@@ -1,10 +1,13 @@
 var Mongoose = require('mongoose'),
     config = require('./config');
-Mongoose.connect('mongodb://' + config.database.host + '/' + config.database.db);
-var db = Mongoose.connection;
+var promise_options = { promiseLibrary: require('bluebird') };
+var db = Mongoose.createConnection(config.mongoUri, promise_options);
+
+mongoose.connect(config.monngoUri);
+
 db.on('error', console.error.bind(console, 'connection error'));
 db.once('open', function callback() {
     console.log("Connection with database succeeded.");
 });
-exports.Mongoose = Mongoose;
-exports.db = db;
+
+module.exports = db;
