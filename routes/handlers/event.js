@@ -24,7 +24,7 @@ exports.create = {
 
     return event.save()
     .then(function(e){
-      reply(event);
+      reply(e);
     })
     .catch(function(err){
       console.log('err', err);
