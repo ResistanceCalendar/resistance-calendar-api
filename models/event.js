@@ -22,7 +22,7 @@ var EventSchema = new mongoose.Schema({
 	status: { type: String, enum: ['confirmed', 'tentatives', 'cancelled']},
 	//instructions for event shown after people have RSVPed. Text and/or HTML
 	instructions: { type: String },
-	start_date: { type: Date, required: true },
+	start_date: { type: Date },
 	end_date: { type: Date },
 	add_day_date: { type: Date },
 	add_day: {type: Boolean },
@@ -30,7 +30,8 @@ var EventSchema = new mongoose.Schema({
 	guests_can_invite_others: { type: Boolean },
 	facebookLink: { type: String },
 	date: {type: Date, required: true },
-	location: {
+	//had to change 'location' to 'loc' bc location is reserved in mongo
+	loc: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Location'
 	}
