@@ -1,5 +1,5 @@
-const Event = require('../../models/event');
-const Joi = require('Joi');
+const Event = require('../../models/osdi/event');
+const Joi = require('joi');
 const Boom = require('Boom');
 const lodash = require('lodash');
 

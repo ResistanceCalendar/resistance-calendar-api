@@ -1,5 +1,5 @@
-const Location = require('../../models/location');
-const Joi = require('Joi');
+const Location = require('../../models/osdi/location');
+const Joi = require('joi');
 const Boom = require('Boom');
 const lodash = require('lodash');
 
