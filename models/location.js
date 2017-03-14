@@ -26,4 +26,4 @@ Location.index({ 'location' : '2dsphere' });
 
 let location = mongoose.model('Location', Location);
 
-module.exports = event;
+module.exports = location;
