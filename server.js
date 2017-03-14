@@ -3,7 +3,7 @@
 'use strict';
 
 const Hapi = require('hapi'),
-Db = require('./database');
+Db = require('./lib/database');
 
 // Create a server with a host and port
 const server = new Hapi.Server();
