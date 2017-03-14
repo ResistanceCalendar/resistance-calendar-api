@@ -1,6 +1,5 @@
 const Location = require('../../models/osdi/location');
 const Joi = require('joi');
-const Boom = require('Boom');
 const lodash = require('lodash');
 
 exports.create = {
