@@ -7,7 +7,6 @@
     "node": "6.10.0"
   },
   "scripts": {
-    "test": "semistandard",
     "posttest": "semistandard"
   },
   "repository": {
