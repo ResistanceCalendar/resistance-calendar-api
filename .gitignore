@@ -40,6 +40,10 @@ jspm_packages
 .idea/
 *.iml
 
+# coverty files
+cov-int/
+cov-int-project.tgz
+
 development.sh
 test.sh
 
