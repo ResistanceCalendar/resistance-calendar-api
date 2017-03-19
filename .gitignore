@@ -42,3 +42,6 @@ jspm_packages
 
 development.sh
 test.sh
+
+# local datastore
+.db
