@@ -19,7 +19,7 @@ exports.create = {
     }
   },
 
-  handler: function(req, reply) {
+  handler: function (req, reply) {
     let locationPoint = {
       type: 'Point',
       coordinates: [req.payload.longitude, req.payload.latitude]
@@ -31,15 +31,15 @@ exports.create = {
       modified_date: new Date()
     };
 
-    let new_location = new Location(lodash.merge(req.payload, params));
+    let newLocation = new Location(lodash.merge(req.payload, params));
 
-    return new_location.save()
-    .then(function(loc){
-      reply(loc);
-    })
-    .catch(function(err){
-      console.log('err', err);
-      throw new Error(err);
-    });
+    return newLocation.save()
+      .then(function (loc) {
+        reply(loc);
+      })
+      .catch(function (err) {
+        console.log('err', err);
+        throw new Error(err);
+      });
   }
 };

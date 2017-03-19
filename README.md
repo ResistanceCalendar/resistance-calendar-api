@@ -23,7 +23,7 @@ mkdir .db
 mongod --dbpath .db/
 
 # Always a good idea to install packages
-npm install
+npm install && npm install semistandard -g
 
 # Run the service
 npm run

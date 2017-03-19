@@ -7,7 +7,7 @@
     "node": "6.10.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "posttest": "semistandard"
   },
   "repository": {
     "type": "git",
@@ -28,7 +28,7 @@
     "mongodb": "^1.4",
     "mongoose": "^4.8.6"
   },
-  "plugins": {
-    "./lib/modules/facebook": null
+  "devDependencies": {
+    "semistandard": "10.0.0"
   }
 }
