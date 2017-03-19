@@ -1,14 +1,11 @@
-/** hapijs default hello world **/
-
 'use strict';
 
-const Hapi = require('hapi'),
-  Db = require('./lib/database');
+const Hapi = require('hapi');
+require('./lib/database'); // contains side effect for initializing database
 
 // Create a server with a host and port
 const server = new Hapi.Server();
 server.connection({
-  host: 'localhost',
   port: process.env.PORT || 8000
 });
 
