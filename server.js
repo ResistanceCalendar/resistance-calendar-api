@@ -1,7 +1,5 @@
 'use strict';
 
-const config = require('./config');
-
 const Hapi = require('hapi');
 const corsHeaders = require('hapi-cors-headers');
 require('./lib/database'); // contains side effect for initializing database
@@ -9,10 +7,8 @@ require('./lib/database'); // contains side effect for initializing database
 // Create a server with a host and port
 const server = new Hapi.Server({
   cache: [{
-    name: 'mongoCache',
-    engine: require('catbox-mongodb'),
-    partition: 'cache',
-    uri: config.mongoUri
+    name: 'memoryCache',
+    engine: require('catbox-memory')
   }]
 });
 server.connection({
