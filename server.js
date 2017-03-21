@@ -4,7 +4,7 @@ const config = require('./config');
 
 const Hapi = require('hapi');
 const corsHeaders = require('hapi-cors-headers');
-require('./lib/database'); // contains side effect for initializing database
+// require('./lib/database'); // contains side effect for initializing database
 
 // Create a server with a host and port
 const server = new Hapi.Server({
