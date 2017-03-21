@@ -28,6 +28,7 @@
     "joi": "^10.2.2",
     "lodash": "^4.17.4",
     "moment": "2.18.0",
+    "mongodb": "^2.2.25",
     "mongoose": "^4.8.6"
   },
   "devDependencies": {
