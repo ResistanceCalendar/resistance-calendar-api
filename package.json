@@ -27,6 +27,7 @@
     "hapi-cors-headers": "1.0.0",
     "joi": "^10.2.2",
     "lodash": "^4.17.4",
+    "moment": "2.18.0",
     "mongoose": "^4.8.6"
   },
   "devDependencies": {
