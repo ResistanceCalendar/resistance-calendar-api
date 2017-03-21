@@ -5,7 +5,12 @@ const corsHeaders = require('hapi-cors-headers');
 require('./lib/database'); // contains side effect for initializing database
 
 // Create a server with a host and port
-const server = new Hapi.Server();
+const server = new Hapi.Server({
+  cache: [{
+    name: 'memoryCache',
+    engine: require('catbox-memory')
+  }]
+});
 server.connection({
   port: process.env.PORT || 8000
 });

@@ -21,12 +21,14 @@
   "homepage": "https://github.com/ResistanceCalendar/resistance-calendar-api#readme",
   "dependencies": {
     "bluebird": "^3.5.0",
+    "catbox-memory": "2.0.4",
     "fbgraph": "^1.4.1",
     "hapi": "^16.1.0",
     "hapi-cors-headers": "1.0.0",
     "joi": "^10.2.2",
     "lodash": "^4.17.4",
-    "mongodb": "^1.4",
+    "moment": "2.18.0",
+    "mongodb": "^2.2.25",
     "mongoose": "^4.8.6"
   },
   "devDependencies": {
