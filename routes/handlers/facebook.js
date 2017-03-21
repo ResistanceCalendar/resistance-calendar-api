@@ -2,7 +2,7 @@ const Facebook = require('../../lib/facebook');
 
 /**
  * Example:
- *  Facebook.doGetEvents(function (err, result) {...})
+ *  Facebook.events(function (err, result) {...})
  */
 module.exports.events = function (next) {
   Facebook.getOSDIEvents(function (err, osdiEvents) {
