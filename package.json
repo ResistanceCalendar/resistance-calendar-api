@@ -26,7 +26,6 @@
     "hapi-cors-headers": "1.0.0",
     "joi": "^10.2.2",
     "lodash": "^4.17.4",
-    "mongodb": "^1.4",
     "mongoose": "^4.8.6"
   },
   "devDependencies": {
