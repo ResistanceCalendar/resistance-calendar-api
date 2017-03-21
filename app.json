@@ -1,0 +1,30 @@
+{
+  "name": "resistance-calendar-api",
+  "scripts": {
+  },
+  "env": {
+    "FB_GRAPH_API_TOKEN": {
+      "required": true
+    },
+    "FB_GRAPH_API_VERSION": {
+      "required": true
+    },
+    "MONGODB_URI": {
+      "required": true
+    },
+    "PAPERTRAIL_API_TOKEN": {
+      "required": true
+    }
+  },
+  "formation": {
+  },
+  "addons": [
+    "mongolab",
+    "papertrail"
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ]
+}
