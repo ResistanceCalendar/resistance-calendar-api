@@ -1,1 +1,1 @@
-web: npm start
+web: npm install mongodb --save && npm start
