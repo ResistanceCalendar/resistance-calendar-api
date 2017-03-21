@@ -1,10 +1,19 @@
 'use strict';
 
+const config = require('./config');
+
 const Hapi = require('hapi');
 require('./lib/database'); // contains side effect for initializing database
 
 // Create a server with a host and port
-const server = new Hapi.Server();
+const server = new Hapi.Server({
+  cache: [{
+    name: 'mongoCache',
+    engine: require('catbox-mongodb'),
+    uri: config.mongoUri,
+    partition: 'cache'
+  }]
+});
 server.connection({
   port: process.env.PORT || 8000
 });
