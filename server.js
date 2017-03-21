@@ -9,10 +9,10 @@ require('./lib/database'); // contains side effect for initializing database
 // Create a server with a host and port
 const server = new Hapi.Server({
   cache: [{
-    name: 'mongoCache',
     engine: require('catbox-mongodb'),
-    uri: config.mongoUri,
-    partition: 'cache'
+    name: 'mongoCache',
+    partition: 'cache',
+    uri: config.mongoUri
   }]
 });
 server.connection({
