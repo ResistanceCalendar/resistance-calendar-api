@@ -10,7 +10,7 @@ require('./lib/database'); // contains side effect for initializing database
 const server = new Hapi.Server({
   cache: [{
     name: 'mongoCache',
-    engine: 'catbox-mongodb',
+    engine: require('catbox-mongodb'),
     partition: 'cache',
     uri: config.mongoUri
   }]
