@@ -10,7 +10,7 @@ const server = new Hapi.Server({
   cache: [{
     name: 'mongoCache',
     engine: require('catbox-mongodb'),
-    host: config.mongoUri,
+    uri: config.mongoUri,
     partition: 'cache'
   }]
 });
