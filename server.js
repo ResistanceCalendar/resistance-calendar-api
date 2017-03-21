@@ -1,6 +1,7 @@
 'use strict';
 
 const Hapi = require('hapi');
+const corsHeaders = require('hapi-cors-headers');
 require('./lib/database'); // contains side effect for initializing database
 
 // Create a server with a host and port
@@ -30,6 +31,7 @@ server.register(plugins, function () {
       console.error(err);
       throw err;
     }
+    server.ext('onPreResponse', corsHeaders);
     console.log('Server running at:', server.info.uri);
   });
 });
