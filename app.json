@@ -9,7 +9,9 @@
     "FB_GRAPH_API_VERSION": {
       "required": true
     },
-    "MONGODB_URI": "production",
+    "MONGODB_URI": {
+      "required": true
+    },
     "PAPERTRAIL_API_TOKEN": {
       "required": true
     }
