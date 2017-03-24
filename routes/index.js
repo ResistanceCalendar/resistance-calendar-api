@@ -23,6 +23,9 @@ exports.register = (plugin, options, next) => {
       staleIn: moment.duration(1, 'minute').asMilliseconds(),
       staleTimeout: 100,
       generateTimeout: moment.duration(2, 'seconds').asMilliseconds()
+    },
+    generateKey: function (opts) {
+      return JSON.stringify(opts);
     }
   });
 
@@ -43,7 +46,7 @@ const createRoute = function (method, path, serverMethod) {
     method: method,
     path: path,
     handler: function (request, reply) {
-      serverMethod(function (error, result) {
+      serverMethod(request.query, function (error, result) {
         reply(error || result);
       });
     }
