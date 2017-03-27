@@ -4,40 +4,25 @@ require('../lib/database'); // Has side effect of connecting to database
 
 module.exports = function (job, done) {
   Facebook.getOSDIEvents({per_page: 1}, function (err, res) {
-    if (err) {
-      console.error(err);
-      return;
-    }
+    if (err) handleError('fetching facebook events', err);
 
-    const osdiEvents = res;
-
-    osdiEvents.forEach(function (osdiEvent) {
+    res.forEach(function (osdiEvent) {
       const facebookId = osdiEvent.identifiers[0];
       const facebookEventName = osdiEvent.name + ' [' + facebookId + ']';
 
       // TODO(aaghevli): Make sure we pick the right id
       const query = { identifiers: { $in: [facebookId] } };
       Event.find(query, function (err, eventData) {
-        if (err) {
-          console.log('error finding ' + facebookEventName, err);
-          throw new Error(err);
-        }
-
+        if (err) handleError('error finding ' + facebookEventName, err);
         if (eventData.length === 0) {
           osdiEvent.save(function (err, data) {
-            if (err) {
-              console.log('error saving' + facebookEventName, err);
-              throw new Error(err);
-            }
+            if (err) handleError('error saving' + facebookEventName, err);
             console.log('saved ' + facebookEventName);
           });
         } else {
           osdiEvent._id = eventData._id;
           Event.update(osdiEvent, function (err, raw) {
-            if (err) {
-              console.log('error updating ' + facebookEventName, err);
-              throw new Error(err);
-            }
+            if (err) handleError('error updating ' + facebookEventName, err);
             console.log('updated ' + facebookEventName);
           });
         }
@@ -45,4 +30,9 @@ module.exports = function (job, done) {
     });
     done();
   });
+};
+
+const handleError = function (err, str) {
+  console.log(str, err);
+  throw new Error(err);
 };
