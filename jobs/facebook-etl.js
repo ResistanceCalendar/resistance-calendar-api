@@ -8,7 +8,7 @@ module.exports = function (job, done) {
 
     res.forEach(function (osdiEvent) {
       const facebookId = osdiEvent.identifiers[0];
-      const facebookEventName = '[' + facebookId + '] ' + osdiEvent.name;
+      const facebookEventName = osdiEvent.name + '[' + facebookId + ']';
 
       // TODO(aaghevli): Make sure we pick the right id
       const query = { identifiers: { $in: [facebookId] } };
