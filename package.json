@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/ResistanceCalendar/resistance-calendar-api#readme",
   "dependencies": {
+    "agenda": "^0.9.0",
     "bluebird": "^3.5.0",
     "catbox-memory": "2.0.4",
     "fbgraph": "^1.4.1",
