@@ -4,8 +4,8 @@ const Facebook = require('../../lib/facebook');
  * Example:
  *  Facebook.events(function (err, result) {...})
  */
-module.exports.events = function (next) {
-  Facebook.getOSDIEvents(function (err, osdiEvents) {
+module.exports.events = function (opts, next) {
+  Facebook.getOSDIEvents(opts, function (err, osdiEvents) {
     if (err) {
       console.log('Error: ' + JSON.stringify(err));
       next(err);

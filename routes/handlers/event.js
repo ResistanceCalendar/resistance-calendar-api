@@ -43,12 +43,12 @@ exports.create = {
     var event = new Event(lodash.merge(req.payload, params));
 
     return event.save()
-    .then(function (e) {
-      reply(e);
-    })
-    .catch(function (err) {
-      console.log('err', err);
-      throw new Error(err);
-    });
+      .then(function (e) {
+        reply(e);
+      })
+      .catch(function (err) {
+        console.log('err', err);
+        throw new Error(err);
+      });
   }
 };
