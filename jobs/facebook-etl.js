@@ -20,10 +20,7 @@ const saveOrUpdate = function (osdiEvent) {
     return id.startsWith('facebook:');
   });
 
-  if (facebookId === undefined) {
-    const err = 'no facebook id found ' + osdiEvent.name;
-    handleError(err, err);
-  } else {
+  if (facebookId) {
     const facebookEventName = osdiEvent.name + ' [' + facebookId + ']';
     const query = { identifiers: { $in: [facebookId] } };
     Event.find(query, function (err, eventData) {
@@ -41,5 +38,8 @@ const saveOrUpdate = function (osdiEvent) {
         });
       }
     });
+  } else {
+    const err = 'no facebook id found ' + osdiEvent.name;
+    handleError(err, err);
   }
 };
