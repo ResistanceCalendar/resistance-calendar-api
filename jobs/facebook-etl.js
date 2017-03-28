@@ -37,13 +37,6 @@ const saveOrUpdate = function (osdiEvent) {
           console.log('updated ' + facebookEventName);
         });
       }
-
-      if (osdiEvent.location) {
-        osdiEvent.location.save(function (err, data) {
-          if (err) handleError('error saving location ' + facebookEventName, err);
-          console.log('saved location ' + facebookEventName);
-        });
-      }
     });
   } else {
     const err = 'no facebook id found ' + osdiEvent.name;
