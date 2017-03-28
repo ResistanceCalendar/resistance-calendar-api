@@ -12,7 +12,7 @@ exports.create = {
       // title of event for public display
       title: Joi.string().required(),
       // may contain text and/or HTML
-      description: Joi.string().required(),
+      description: Joi.string(),
       // text-only, single paragraph. For listing pages with not enough room for description
       summary: Joi.string(),
       browser_url: Joi.string(),
