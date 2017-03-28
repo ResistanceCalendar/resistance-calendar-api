@@ -10,6 +10,6 @@ const agenda = new Agenda({db: {address: config.mongoUri}});
 agenda.define('facebook-etl', facebookEtl);
 
 agenda.on('ready', function () {
-  agenda.now('facebook-etl');
+  agenda.every('1 hour', 'facebook-etl');
   agenda.start();
 });
