@@ -10,7 +10,7 @@ const EventSchema = new mongoose.Schema({
   // title of event for public display
   title: { type: String, required: true },
   // may contain text and/or HTML
-  description: { type: String, required: true },
+  description: { type: String },
   // text-only, single paragraph. For listing pages with not enough room for description
   summary: { type: String },
   browser_url: { type: String },
