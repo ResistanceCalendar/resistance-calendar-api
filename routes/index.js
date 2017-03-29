@@ -1,6 +1,5 @@
 const Facebook = require('./handlers/facebook');
 const Event = require('./handlers/event');
-const Location = require('./handlers/location');
 const moment = require('moment');
 
 /**
@@ -31,8 +30,7 @@ exports.register = (plugin, options, next) => {
 
   plugin.route([
     createRoute('GET', '/facebook/events', plugin.methods.getFacebookEvents),
-    { method: 'POST', path: '/events', config: Event.create },
-    { method: 'POST', path: '/location', config: Location.create }
+    { method: 'POST', path: '/events', config: Event.create }
   ]);
   next();
 };
