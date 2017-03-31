@@ -30,7 +30,8 @@
     "lodash": "^4.17.4",
     "moment": "2.18.0",
     "mongodb": "^2.2.25",
-    "mongoose": "^4.8.6"
+    "mongoose": "^4.8.6",
+    "odata-v4-mongodb": "0.1.10"
   },
   "devDependencies": {
     "semistandard": "10.0.0"
