@@ -15,7 +15,7 @@ agenda.on('start', function (job) {
 
 agenda.on('ready', function () {
   console.log('Worker processes ready...');
-  agenda.now('facebook-etl');
   agenda.every('1 hour', 'facebook-etl');
+  agenda.now('facebook-etl');
   agenda.start();
 });
