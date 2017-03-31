@@ -1,21 +1,24 @@
 const Event = require('../../models/osdi/event');
 const Joi = require('joi');
 const lodash = require('lodash');
+const createFilter = require('odata-v4-mongodb').createFilter;
 
 const OPTS_SCHEMA = Joi.object().keys({
   per_page: Joi.number().integer().min(1).default(25),
-  page: Joi.number().integer().min(0).default(0)
+  page: Joi.number().integer().min(0).default(0),
+  $filter: Joi.string()
 });
 
 exports.get = function (opts, next) {
   Joi.validate(opts, OPTS_SCHEMA, function (err, query) {
     if (err) handleError(next, 'validating', err);
-    console.log('querying');
+    const filter = createFilter(query.$filter);
+    console.log('mongo db filter from odata: ' + filter);
     Event.count()
       .exec(function (err, count) {
         if (err) handleError(next, 'counting events', err);
 
-        Event.find()
+        Event.find(filter)
           .limit(query.per_page)
           .skip(query.per_page * query.page)
           .exec(function (err, osdiEvents) {
@@ -86,7 +89,7 @@ exports.create = {
   }
 };
 
-const handleError = function (next, err, str) {
+const handleError = function (next, str, err) {
   console.log(str, err);
   next(err);
 };
