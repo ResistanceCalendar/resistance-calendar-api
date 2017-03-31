@@ -10,7 +10,6 @@ const OPTS_SCHEMA = Joi.object().keys({
 exports.get = function (opts, next) {
   Joi.validate(opts, OPTS_SCHEMA, function (err, query) {
     if (err) handleError(next, 'validating', err);
-    console.log('querying');
     Event.count()
       .exec(function (err, count) {
         if (err) handleError(next, 'counting events', err);
