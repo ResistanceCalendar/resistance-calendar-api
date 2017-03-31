@@ -2,6 +2,39 @@ const Event = require('../../models/osdi/event');
 const Joi = require('joi');
 const lodash = require('lodash');
 
+const OPTS_SCHEMA = Joi.object().keys({
+  per_page: Joi.number().integer().min(1).default(25),
+  page: Joi.number().integer().min(0).default(0)
+});
+
+exports.get = function (opts, next) {
+  Joi.validate(opts, OPTS_SCHEMA, function (err, query) {
+    if (err) handleError(next, 'validating', err);
+    console.log('querying');
+    Event.count()
+      .exec(function (err, count) {
+        if (err) handleError(next, 'counting events', err);
+
+        Event.find()
+          .limit(query.per_page)
+          .skip(query.per_page * query.page)
+          .exec(function (err, osdiEvents) {
+            if (err) handleError(next, 'finding events', err);
+            const response = {
+              total_pages: Math.ceil(count / query.per_page),
+              per_page: query.per_page,
+              page: query.page,
+              total_records: count,
+              _embedded: {
+                'osdi:events': osdiEvents
+              }
+            };
+            next(null, response);
+          });
+      });
+  });
+};
+
 exports.create = {
   validate: {
     payload: {
@@ -51,4 +84,9 @@ exports.create = {
         throw new Error(err);
       });
   }
+};
+
+const handleError = function (next, err, str) {
+  console.log(str, err);
+  next(err);
 };
