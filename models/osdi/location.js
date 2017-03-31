@@ -15,7 +15,7 @@ const Location = new mongoose.Schema({
   language: { type: String },
   location: {
     type: { type: String },
-    // coordinate are [longitude, latitude]
+    // coordinate are [latitude, longitude]
     coordinates: [Number],
     accuracy: {type: String, enum: ['Rooftop', 'Approximate']}
   }
