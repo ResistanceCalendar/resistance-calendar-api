@@ -6,7 +6,9 @@ const createFilter = require('odata-v4-mongodb').createFilter;
 const OPTS_SCHEMA = Joi.object().keys({
   per_page: Joi.number().integer().min(1).default(25),
   page: Joi.number().integer().min(0).default(0),
-  $filter: Joi.string()
+  $filter: Joi.string(),
+  $top: Joi.number().integer(),
+  $inlinecount: Joi.number().integer()
 });
 
 exports.get = function (opts, next) {
@@ -14,7 +16,7 @@ exports.get = function (opts, next) {
     if (err) handleError(next, 'validating', err);
     const filter = createFilter(query.$filter);
     console.log('mongo db filter from odata: ' + filter);
-    Event.count()
+    Event.count(filter)
       .exec(function (err, count) {
         if (err) handleError(next, 'counting events', err);
 
