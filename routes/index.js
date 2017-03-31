@@ -1,6 +1,5 @@
 const Facebook = require('./handlers/facebook');
 const Event = require('./handlers/event');
-const Location = require('./handlers/location');
 const moment = require('moment');
 
 /**
@@ -29,10 +28,22 @@ exports.register = (plugin, options, next) => {
     }
   });
 
+  plugin.method('getOSDIEvents', Event.get, {
+    cache: {
+      expiresIn: moment.duration(5, 'minute').asMilliseconds(),
+      staleIn: moment.duration(1, 'minute').asMilliseconds(),
+      staleTimeout: 100,
+      generateTimeout: moment.duration(2, 'seconds').asMilliseconds()
+    },
+    generateKey: function (opts) {
+      return JSON.stringify(opts);
+    }
+  });
+
   plugin.route([
     createRoute('GET', '/facebook/events', plugin.methods.getFacebookEvents),
-    { method: 'POST', path: '/events', config: Event.create },
-    { method: 'POST', path: '/location', config: Location.create }
+    createRoute('GET', '/v1/events', plugin.methods.getOSDIEvents),
+    { method: 'POST', path: '/events', config: Event.create }
   ]);
   next();
 };

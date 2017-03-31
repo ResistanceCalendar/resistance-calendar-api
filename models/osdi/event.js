@@ -30,13 +30,32 @@ const EventSchema = new mongoose.Schema({
   facebookLink: { type: String },
   date: { type: Date, required: true },
   // had to change 'location' to 'loc' bc location is reserved in mongo
-  loc: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Location'
+  location: {
+    type: {
+      identifiers: [String],
+      origin_system: { type: String },
+      created_date: { type: Date, required: true },
+      modified_date: { type: Date, required: true },
+
+      venue: { type: String },
+      address_lines: [String],
+      locality: { type: String },
+      region: { type: String },
+      postal_code: { type: String },
+      country: { type: String },
+      language: { type: String },
+      location: {
+        type: { type: String },
+        // coordinate are [latitude, longitude]
+        coordinates: [Number],
+        accuracy: {type: String, enum: ['Rooftop', 'Approximate']}
+      }
+    },
+    required: false
   }
 });
 
-EventSchema.index({ 'location': '2dsphere' });
+EventSchema.index({ 'location.location': '2dsphere' });
 
 let event = mongoose.model('Event', EventSchema);
 
