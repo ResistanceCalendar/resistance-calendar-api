@@ -1,4 +1,3 @@
-const Facebook = require('./handlers/facebook');
 const Event = require('./handlers/event');
 const moment = require('moment');
 
@@ -16,18 +15,6 @@ const moment = require('moment');
  */
 
 exports.register = (plugin, options, next) => {
-  plugin.method('getFacebookEvents', Facebook.events, {
-    cache: {
-      expiresIn: moment.duration(5, 'minute').asMilliseconds(),
-      staleIn: moment.duration(1, 'minute').asMilliseconds(),
-      staleTimeout: 100,
-      generateTimeout: moment.duration(2, 'seconds').asMilliseconds()
-    },
-    generateKey: function (opts) {
-      return JSON.stringify(opts);
-    }
-  });
-
   plugin.method('getOSDIEvents', Event.get, {
     cache: {
       expiresIn: moment.duration(5, 'minute').asMilliseconds(),
@@ -41,7 +28,6 @@ exports.register = (plugin, options, next) => {
   });
 
   plugin.route([
-    createRoute('GET', '/facebook/events', plugin.methods.getFacebookEvents),
     createRoute('GET', '/v1/events', plugin.methods.getOSDIEvents),
     { method: 'POST', path: '/events', config: Event.create }
   ]);
