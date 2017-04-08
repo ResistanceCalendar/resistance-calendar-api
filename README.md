@@ -11,6 +11,34 @@ API for Resistance Calendar events
 * [MongoDB](https://www.mongodb.com) from the [downloads page](https://www.mongodb.com/download-center?jmp=nav#community)
 * [Node Package Manager](https://www.npmjs.com)
 
+## Demo
+
+An instance of the application is running at the following location:
+
+https://resistance-calendar.herokuapp.com/v1/events
+
+### Endpoints
+
+All endpoints try to be compliant with the [OSDI Events](https://opensupporter.github.io/osdi-docs/events.html) standard which exposes two high level endpoints and a few options for paging:
+* https://resistance-calendar.herokuapp.com/v1/events
+* https://resistance-calendar.herokuapp.com/v1/events/{:id} (TODO: #46)
+* https://resistance-calendar.herokuapp.com/v1/events?page=0&per_page=25
+
+### Queries
+
+Queries are intended to comply with the ODATA standard and use [odata-v4-mongodb](https://github.com/jaystack/odata-v4-mongodb) to do so which implements much, but not all of the standard. Some examples of common queries are:
+* Filter by start date (dates in [ISO8601 format](https://en.wikipedia.org/wiki/ISO_8601)):
+ * [https://resistance-calendar.herokuapp.com/v1/events?$filter=start_date gt '2017-03-01'](https://resistance-calendar.herokuapp.com/v1/events?$filter=start_date%20gt%20'2017-03-01')
+ * [https://resistance-calendar.herokuapp.com/v1/events?$filter=start_date gt '2017-03-01' and start_date lt '2017-03-02' ](https://resistance-calendar.herokuapp.com/v1/events?$filter=start_date%20gt%20'2017-03-01' and start_date%20lt%20'2017-03-02')
+* Filter by nested property (postal_code and locality/city):
+ * [https://resistance-calendar.herokuapp.com/v1/events?$filter=location/postal_code eq '22980'](https://resistance-calendar.herokuapp.com/v1/events?$filter=location/postal_code%20eq%20'22980')
+ * [https://resistance-calendar.herokuapp.com/v1/events?$filter=contains(location/locality, 'Savannah')](https://resistance-calendar.herokuapp.com/v1/events?$filter=contains%28location/locality,%20'Savannah'%29)
+
+### Known limitations
+
+Only the first contains clause is used in the following query and a [PR has been filed](https://github.com/jaystack/odata-v4-mongodb/pull/4) to fix:
+ * [https://resistance-calendar.herokuapp.com/v1/events?$filter=contains(title, 'Meetup') or contains(name, 'Meetup') or contains(description, 'Meetup')](https://resistance-calendar.herokuapp.com/v1/events?$filter=contains%28title,%20'Meetup'%29%20or%20contains%28name,%20'Meetup'%29%20or%20contains%28description,%20'Meetup'%29)
+
 ## Run the server
 ```
 cd resistance-calendar-api
