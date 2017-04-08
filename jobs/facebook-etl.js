@@ -3,11 +3,16 @@ const Facebook = require('../lib/facebook');
 require('../lib/database'); // Has side effect of connecting to database
 
 module.exports = function (job, done) {
-  Facebook.getAllOSDIEvents(function (err, res) {
+  Facebook.getAllFacebookEvents(function (err, res) {
     if (err) handleError('fetching facebook events', err);
-    res.forEach(saveOrUpdate);
-    done();
-  });
+    const osdiEvents = res.map(Facebook.toOSDIEvent);
+    const coverImages = res.map(function (facebookEvent) {
+      console.log(JSON.stringify(facebookEvent));
+      return facebookEvent.cover;
+    });
+    console.log(JSON.stringify(coverImages));
+    osdiEvents.forEach(saveOrUpdateEvent);
+  }, 1);
 };
 
 const handleError = function (err, str) {
@@ -15,7 +20,7 @@ const handleError = function (err, str) {
   throw new Error(err);
 };
 
-const saveOrUpdate = function (osdiEvent) {
+const saveOrUpdateEvent = function (osdiEvent) {
   const facebookId = osdiEvent.identifiers.find(function (id) {
     return id.startsWith('facebook:');
   });
