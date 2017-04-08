@@ -26,7 +26,7 @@ All endpoints try to be compliant with the [OSDI Events](https://opensupporter.g
 
 ### Queries
 
-Queries are intended to comply with the ODATA standard and use [odata-v4-mongodb](https://github.com/jaystack/odata-v4-mongodb) to do so which implements much, but not all of the standard. Some examples of common queries are:
+Queries are intended to comply with the [ODATA standard](http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions-complete.html) and use [odata-v4-mongodb](https://github.com/jaystack/odata-v4-mongodb) to do so which implements much, but not all of the standard. Some examples of common queries are:
 * Filter by start date (dates in [ISO8601 format](https://en.wikipedia.org/wiki/ISO_8601)):
  * [https://resistance-calendar.herokuapp.com/v1/events?$filter=start_date gt '2017-03-01'](https://resistance-calendar.herokuapp.com/v1/events?$filter=start_date%20gt%20'2017-03-01')
  * [https://resistance-calendar.herokuapp.com/v1/events?$filter=start_date gt '2017-03-01' and start_date lt '2017-03-02' ](https://resistance-calendar.herokuapp.com/v1/events?$filter=start_date%20gt%20'2017-03-01' and start_date%20lt%20'2017-03-02')
