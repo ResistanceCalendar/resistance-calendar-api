@@ -35,7 +35,6 @@ const EventSchema = new mongoose.Schema({
       origin_system: { type: String },
       created_date: { type: Date, required: true },
       modified_date: { type: Date, required: true },
-
       venue: { type: String },
       address_lines: [String],
       locality: { type: String },
