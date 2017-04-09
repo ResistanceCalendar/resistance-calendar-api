@@ -28,7 +28,6 @@ const EventSchema = new mongoose.Schema({
   capacity: { type: Number },
   guests_can_invite_others: { type: Boolean },
   facebookLink: { type: String },
-  date: { type: Date, required: true },
   // had to change 'location' to 'loc' bc location is reserved in mongo
   location: {
     type: {
@@ -36,7 +35,6 @@ const EventSchema = new mongoose.Schema({
       origin_system: { type: String },
       created_date: { type: Date, required: true },
       modified_date: { type: Date, required: true },
-
       venue: { type: String },
       address_lines: [String],
       locality: { type: String },
