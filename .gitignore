@@ -49,3 +49,6 @@ test.sh
 
 # local datastore
 .db
+
+# Mac stuff
+.DS_Store
