@@ -53,7 +53,7 @@ const EventSchema = new mongoose.Schema({
     },
     required: false
   }
-});
+}, { _id: false });
 
 EventSchema.index({ 'location.location': '2dsphere' });
 
