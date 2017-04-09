@@ -86,29 +86,35 @@ const cacheFacebookEventImage = function (facebookEvent, callback) {
       port: '',
       path: parsedUrl.pathname
     };
-    const req = http.request(options, function (res, err) {
+    const upload = function () {
+      cloudinary.uploader.upload(
+        filename,
+        function (result) {
+          console.log('uploaded event cover ' + coverId + ' to ' + cloudinaryUrl);
+          // Set the facebook event cover value to the cloudinaryUrl
+          facebookEvent.cover.source = cloudinaryUrl;
+          callback(null, cloudinaryUrl);
+        },
+        {public_id: cloudinaryId}
+      );
+    };
+
+    const req = http.request(cloudinaryUrl, function (res, err) {
       if (err) callback(err);
       if (res.statusCode === 404) {
-        // TODO(aaghevli): Stream API without saving to disk first
-        fs.exists(filename, function (exists) {
-          if (exists) {
-            cloudinary.uploader.upload(filename, function (result) {
-              console.log('uploaded event cover ' + coverId + ' to ' + cloudinaryUrl);
-              // Set the facebook event cover value to the cloudinaryUrl
-              facebookEvent.cover.source = cloudinaryUrl;
-              callback(null, cloudinaryUrl);
-            }, {public_id: cloudinaryId});
-          } else {
-            download(facebookEvent.cover.source, filename, function () {
-              cloudinary.uploader.upload(filename, function (result) {
-                console.log('uploaded event cover ' + coverId + ' to ' + cloudinaryUrl);
-                // Set the facebook event cover value to the cloudinaryUrl
-                facebookEvent.cover.source = cloudinaryUrl;
-                callback(null, cloudinaryUrl);
-              }, {public_id: cloudinaryId});
-            });
-          }
+        var stream = cloudinary.uploader.upload_stream(function (result) {
+          console.log(result);
         });
+        request(cloudinaryUrl).pipe(stream).on('close', callback);
+
+        // // TODO(aaghevli): Stream API without saving to disk first
+        // fs.exists(filename, function (exists) {
+        //   if (exists) {
+        //     upload();
+        //   } else {
+        //     download(facebookEvent.cover.source, filename, upload());
+        //   }
+        // });
       } else if (res.statusCode === 200) {
         console.log('event cover ' + coverId + ' already exists at ' + cloudinaryUrl);
         facebookEvent.cover.source = cloudinaryUrl;
