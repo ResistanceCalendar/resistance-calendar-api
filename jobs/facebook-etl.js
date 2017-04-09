@@ -23,6 +23,12 @@ const saveOrUpdate = function (osdiEvent) {
   if (facebookId) {
     const facebookEventName = osdiEvent.name + ' [' + facebookId + ']';
     const query = { identifiers: { $in: [facebookId] } };
+
+    // This funny bit of code is necessary to clear the existing _id from the
+    // model since the id may not be deterministic at the time of model creation
+    //
+    // See http://stackoverflow.com/questions/31775150/node-js-mongodb-the-immutable-field-id-was-found-to-have-been-altered
+    //
     var eventToUpdate = {};
     eventToUpdate = Object.assign(eventToUpdate, osdiEvent._doc);
     delete eventToUpdate._id;
