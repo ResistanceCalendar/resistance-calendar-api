@@ -69,7 +69,7 @@ const upsertEvent = function (osdiEvent, callback) {
       callback(null, doc);
     });
   } else {
-    callback('no facebook id found ' + osdiEvent.name);
+    callback(`no facebook id found ${osdiEvent.name}`);
   }
 };
 
@@ -92,7 +92,6 @@ const cacheFacebookEventImage = function (facebookEvent, callback) {
     const requestOptions = {
       method: 'HEAD',
       host: parsedUrl.host,
-      port: 80,
       path: parsedUrl.pathname,
       agent: false
     };
