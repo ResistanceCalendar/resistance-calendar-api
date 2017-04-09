@@ -18,7 +18,7 @@ module.exports = function (job, done) {
         }
         const osdiEvent = Facebook.toOSDIEvent(facebookEvent);
         const facebookEventName = `'${osdiEvent.name}' [facebook:${facebookEvent.id}]`;
-        upsertEvent(osdiEvent, function (err) {
+        upsertOSDIEvent(osdiEvent, function (err) {
           if (err) handleError(`upserting ${facebookEventName}`);
           console.log(`upserted ${facebookEventName}`);
           callback();
@@ -42,11 +42,11 @@ const handleError = function (err, str) {
  * Upsert the event to mongodb
  *
  * Example:
- *   upsertEvent(osdiEvent, functiuon(err, event) {
+ *   upsertOSDIEvent(osdiEvent, functiuon(err, event) {
  *     // updated event actions
  *   });
  */
-const upsertEvent = function (osdiEvent, callback) {
+const upsertOSDIEvent = function (osdiEvent, callback) {
   const facebookId = osdiEvent.identifiers.find(function (id) {
     return id.startsWith('facebook:');
   });
