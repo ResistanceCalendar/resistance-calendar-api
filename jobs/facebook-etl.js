@@ -1,32 +1,36 @@
 const Event = require('../models/osdi/event');
 const Facebook = require('../lib/facebook');
 const cloudinary = require('cloudinary');
-const fs = require('fs');
-var http = require('http');
-var url = require('url');
-const request = require('request');
+const http = require('http');
+const url = require('url');
+const async = require('async');
 
 require('../lib/database'); // Has side effect of connecting to database
 
 module.exports = function (job, done) {
   Facebook.getAllFacebookEvents(function (err, res) {
     if (err) handleError('fetching facebook events', err);
-    // for each facebook event, cache the image into our cloudinary and update
-    // the cover.source
-
-    res.forEach(function (facebookEvent) {
+    const makeRequest = function (facebookEvent, callback) {
       cacheFacebookEventImage(facebookEvent, function (err, imageUrl) {
         if (err) handleError('updating image for facebook event', err);
         if (facebookEvent.cover) {
           facebookEvent.cover.source = imageUrl;
-          console.log(`updating ${facebookEvent.id} with ${imageUrl}`);
         }
         const osdiEvent = Facebook.toOSDIEvent(facebookEvent);
-        console.log(facebookEvent.id + ': ' + osdiEvent.featured_image_url);
-        saveOrUpdateEvent(osdiEvent);
+        const facebookEventName = `'${osdiEvent.name}' [facebook:${facebookEvent.id}]`;
+        upsertEvent(osdiEvent, function (err) {
+          if (err) handleError(`upserting ${facebookEventName}`);
+          console.log(`upserted ${facebookEventName}`);
+          callback();
+        });
       });
+    };
+
+    // Avoid overwhelming any service by limiting parallelism
+    async.eachLimit(res, 5, makeRequest, function (err) {
+      if (err) handleError(err);
     });
-  }, 1);
+  });
 };
 
 const handleError = function (err, str) {
@@ -34,96 +38,80 @@ const handleError = function (err, str) {
   throw new Error(err);
 };
 
-const download = function (uri, filename, callback) {
-  request.head(uri, function (err, res, body) {
-    if (err) handleError('downloading event image', err);
-    request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
-  });
-};
-
-const saveOrUpdateEvent = function (osdiEvent) {
+/**
+ * Upsert the event to mongodb
+ *
+ * Example:
+ *   upsertEvent(osdiEvent, functiuon(err, event) {
+ *     // updated event actions
+ *   });
+ */
+const upsertEvent = function (osdiEvent, callback) {
   const facebookId = osdiEvent.identifiers.find(function (id) {
     return id.startsWith('facebook:');
   });
 
   if (facebookId) {
-    const facebookEventName = osdiEvent.name + ' [' + facebookId + ']';
     const query = { identifiers: { $in: [facebookId] } };
-    Event.find(query, function (err, eventData) {
-      if (err) handleError('error finding ' + facebookEventName, err);
-      if (eventData.length === 0) {
-        osdiEvent.save(function (err, data) {
-          if (err) handleError('error saving' + facebookEventName, err);
-          console.log('saved ' + facebookEventName);
-        });
-      } else {
-        eventData.forEach(function (event) {
-          osdiEvent._id = event._id;
-          Event.update(osdiEvent, function (err, raw) {
-            if (err) handleError('error updating ' + facebookEventName, err);
-            console.log('updated ' + facebookEventName);
-          });
-        });
-      }
+
+    // This funny bit of code is necessary to clear the existing _id from the
+    // model since the id may not be deterministic at the time of model creation
+    //
+    // See http://stackoverflow.com/questions/31775150/node-js-mongodb-the-immutable-field-id-was-found-to-have-been-altered
+    //
+    var eventToUpdate = {};
+    eventToUpdate = Object.assign(eventToUpdate, osdiEvent._doc);
+    delete eventToUpdate._id;
+
+    const options = {upsert: true, new: true};
+    Event.findOneAndUpdate(query, eventToUpdate, options, function (err, doc) {
+      if (err) callback(err);
+      callback(null, doc);
     });
   } else {
-    const err = 'no facebook id found ' + osdiEvent.name;
-    handleError(err, err);
+    callback('no facebook id found ' + osdiEvent.name);
   }
 };
 
+/**
+ * Downloads the event image defined by facebookEvent.cover.source which
+ * and uploads it to cloundinary, returning the secure url to the callback
+ *
+ * Example:
+ *  cacheFacebookEventImage(facebookEvent, function (err, imageUrl) {
+ *    // do something with imageUrl
+ *  });
+ */
 const cacheFacebookEventImage = function (facebookEvent, callback) {
+  const facebookEventId = `[facebook:${facebookEvent.id}]`;
   if (facebookEvent.cover) {
     const coverId = facebookEvent.cover.id;
-    const cloudinaryId = 'facebook:' + coverId;
-    const filename = coverId + '.jpg';
+    const cloudinaryId = `facebook:${coverId}`;
     const cloudinaryUrl = cloudinary.url(cloudinaryId);
     const parsedUrl = url.parse(cloudinaryUrl);
-
-    const options = {
+    const requestOptions = {
       method: 'HEAD',
       host: parsedUrl.host,
-      port: '',
-      path: parsedUrl.pathname
-    };
-    const upload = function () {
-      cloudinary.uploader.upload(
-        filename,
-        function (result) {
-          console.log('uploaded event cover ' + coverId + ' to ' + cloudinaryUrl);
-          // Set the facebook event cover value to the cloudinaryUrl
-          facebookEvent.cover.source = cloudinaryUrl;
-          callback(null, cloudinaryUrl);
-        },
-        {public_id: cloudinaryId}
-      );
+      port: 80,
+      path: parsedUrl.pathname,
+      agent: false
     };
 
-    const req = http.request(cloudinaryUrl, function (res, err) {
+    http.request(requestOptions, function (res, err) {
       if (err) callback(err);
       if (res.statusCode === 404) {
-        var stream = cloudinary.uploader.upload_stream(function (result) {
-          console.log(result);
-        });
-        request(cloudinaryUrl).pipe(stream).on('close', callback);
-
-        // // TODO(aaghevli): Stream API without saving to disk first
-        // fs.exists(filename, function (exists) {
-        //   if (exists) {
-        //     upload();
-        //   } else {
-        //     download(facebookEvent.cover.source, filename, upload());
-        //   }
-        // });
+        cloudinary.uploader.upload(facebookEvent.cover.source, function (result) {
+          console.log(`${facebookEventId} image saved to ${cloudinaryUrl}`);
+          callback(null, result.secure_url);
+        }, {public_id: cloudinaryId});
       } else if (res.statusCode === 200) {
-        console.log('event cover ' + coverId + ' already exists at ' + cloudinaryUrl);
+        console.log(`${facebookEventId} image exists at ${cloudinaryUrl}`);
         facebookEvent.cover.source = cloudinaryUrl;
         callback(null, cloudinaryUrl);
       }
-    });
-    req.end();
+    }).end();
   } else {
-    console.log('no image for event ' + facebookEvent.id);
+    console.log(`${facebookEventId} has no image`);
     callback(null, undefined);
   }
 };
