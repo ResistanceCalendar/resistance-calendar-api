@@ -29,7 +29,7 @@ All endpoints try to be compliant with the [OSDI Events](https://opensupporter.g
 Queries are intended to comply with the [ODATA standard](http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions-complete.html) and use [odata-v4-mongodb](https://github.com/jaystack/odata-v4-mongodb) to do so which implements much, but not all of the standard. Some examples of common queries are:
 * Filter by start date (dates in [ISO8601 format](https://en.wikipedia.org/wiki/ISO_8601)):
  * [https://resistance-calendar.herokuapp.com/v1/events?$filter=start_date gt '2017-03-01'](https://resistance-calendar.herokuapp.com/v1/events?$filter=start_date%20gt%20'2017-03-01')
- * [https://resistance-calendar.herokuapp.com/v1/events?$filter=start_date gt '2017-03-01' and start_date lt '2017-03-02' ](https://resistance-calendar.herokuapp.com/v1/events?$filter=start_date%20gt%20'2017-03-01' and start_date%20lt%20'2017-03-02')
+ * [https://resistance-calendar.herokuapp.com/v1/events?$filter=start_date gt '2017-03-01' and start_date lt '2017-03-02' ](https://resistance-calendar.herokuapp.com/v1/events?$filter=start_date%20gt%20'2017-03-01'%20and%20start_date%20lt%20'2017-03-02')
 * Filter by nested property (postal_code and locality/city):
  * [https://resistance-calendar.herokuapp.com/v1/events?$filter=location/postal_code eq '22980'](https://resistance-calendar.herokuapp.com/v1/events?$filter=location/postal_code%20eq%20'22980')
  * [https://resistance-calendar.herokuapp.com/v1/events?$filter=contains(location/locality, 'Savannah')](https://resistance-calendar.herokuapp.com/v1/events?$filter=contains%28location/locality,%20'Savannah'%29)
