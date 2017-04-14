@@ -12,9 +12,9 @@ const OPTS_SCHEMA = Joi.object().keys({
 });
 
 exports.get = function (opts, next) {
-  Joi.validate(opts, OPTS_SCHEMA, function (err, query) {
+  Joi.validate(opts.query, OPTS_SCHEMA, function (err, query) {
     if (err) handleError(next, 'validating', err);
-    const filter = createFilter(query.$filter);
+    const filter = createFilter(query.$filter) || opts.params;
     console.log('mongo db filter from odata: ' + JSON.stringify(filter));
     Event.count(filter)
       .exec(function (err, count) {
@@ -38,6 +38,21 @@ exports.get = function (opts, next) {
           });
       });
   });
+};
+
+exports.getOne = function (opts, next) {
+  Event.count(opts.params)
+    .exec(function (err, count) {
+      if (err) handleError(next, 'counting event', err);
+
+      Event.find(opts.params)
+        .exec(function (err, osdiEvent) {
+          if (err) handleError(next, 'finding event', err);
+          const response = osdiEvent;
+
+          next(null, response);
+        });
+    });
 };
 
 exports.create = {
