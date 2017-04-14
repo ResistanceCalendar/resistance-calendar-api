@@ -14,7 +14,7 @@ const OPTS_SCHEMA = Joi.object().keys({
 exports.get = function (opts, next) {
   Joi.validate(opts.query, OPTS_SCHEMA, function (err, query) {
     if (err) handleError(next, 'validating', err);
-    const filter = createFilter(query.$filter) || opts.params;
+    const filter = createFilter(query.$filter);
     console.log('mongo db filter from odata: ' + JSON.stringify(filter));
     Event.count(filter)
       .exec(function (err, count) {
