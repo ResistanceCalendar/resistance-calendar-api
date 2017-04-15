@@ -21,9 +21,11 @@
   },
   "homepage": "https://github.com/ResistanceCalendar/resistance-calendar-api#readme",
   "dependencies": {
+    "async": "^2.3.0",
     "agenda": "^0.9.0",
     "bluebird": "^3.5.0",
     "catbox-memory": "2.0.4",
+    "cloudinary": "^1.8.0",
     "fbgraph": "^1.4.1",
     "hapi": "^16.1.0",
     "hapi-cors-headers": "1.0.0",
