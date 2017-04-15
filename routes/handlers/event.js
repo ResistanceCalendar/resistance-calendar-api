@@ -17,7 +17,7 @@ exports.get = function (opts, next) {
     if (err) handleError(next, 'validating', err);
     const filter = ODATA.createFilter(query.$filter);
     const orderBy = ODATA.createOrderBy(query.$orderby);
-    console.log(`mongo db find = ${JSON.stringify(filter)} sort = ${JSON.stringify(orderBy)}`);
+    console.log(`mongo db filter = ${JSON.stringify(filter)} orderBy = ${JSON.stringify(orderBy)}`);
     Event.count(filter)
       .exec(function (err, count) {
         if (err) handleError(next, 'counting events', err);
