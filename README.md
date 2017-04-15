@@ -38,10 +38,10 @@ Queries are intended to comply with the [ODATA standard](http://docs.oasis-open.
 
 Again, using the [ODATA standard](http://www.odata.org/documentation/odata-version-2-0/uri-conventions/), ordering is done like so:
 
-* Single field sort: [http://resistance-calendar.herokuapp.com:8000/v1/events?$orderby=start_date](https://resistance-calendar.herokuapp.com/v1/events?$orderby=start_date)
-* Multi field sort: [http://resistance-calendar.herokuapp.com:8000/v1/events?$orderby=start_date asc](https://resistance-calendar.herokuapp.com/v1/events?$orderby=start_date,title)
-* Ascending (the default): [http://resistance-calendar.herokuapp.com:8000/v1/events?$orderby=start_date asc](https://resistance-calendar.herokuapp.com/v1/events?$orderby=start_date%20asc)
-* Descending: [http://resistance-calendar.herokuapp.com:8000/v1/events?$orderby=start_date,title desc](https://resistance-calendar.herokuapp.com/v1/events?$orderby=start_date,title%20desc)
+* Single field sort: [http://resistance-calendar.herokuapp.com/v1/events?$orderby=start_date](https://resistance-calendar.herokuapp.com/v1/events?$orderby=start_date)
+* Multi field sort: [http://resistance-calendar.herokuapp.com/v1/events?$orderby=start_date asc](https://resistance-calendar.herokuapp.com/v1/events?$orderby=start_date,title)
+* Ascending (the default): [http://resistance-calendar.herokuapp.com/v1/events?$orderby=start_date asc](https://resistance-calendar.herokuapp.com/v1/events?$orderby=start_date%20asc)
+* Descending: [http://resistance-calendar.herokuapp.com/v1/events?$orderby=start_date,title desc](https://resistance-calendar.herokuapp.com/v1/events?$orderby=start_date,title%20desc)
 
 ### Known limitations
 
