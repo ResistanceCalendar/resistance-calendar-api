@@ -7,6 +7,7 @@ const OPTS_SCHEMA = Joi.object().keys({
   per_page: Joi.number().integer().min(1).default(25),
   page: Joi.number().integer().min(0).default(0),
   $filter: Joi.string(),
+  $orderby: Joi.string(),
   $top: Joi.number().integer(),
   $inlinecount: Joi.number().integer()
 });
@@ -15,12 +16,14 @@ exports.get = function (opts, next) {
   Joi.validate(opts.query, OPTS_SCHEMA, function (err, query) {
     if (err) handleError(next, 'validating', err);
     const filter = createFilter(query.$filter);
-    console.log('mongo db filter from odata: ' + JSON.stringify(filter));
+    const orderBy = createOrderBy(query.$orderby);
+    console.log(`mongo db find = ${JSON.stringify(filter)} sort = ${JSON.stringify(orderBy)}`);
     Event.count(filter)
       .exec(function (err, count) {
         if (err) handleError(next, 'counting events', err);
 
         Event.find(filter)
+          .sort(orderBy)
           .limit(query.per_page)
           .skip(query.per_page * query.page)
           .exec(function (err, osdiEvents) {
@@ -105,6 +108,36 @@ exports.create = {
       });
   }
 };
+
+const createOrderBy = function (query) {
+  try {
+    if (query) {
+      var fields, direction;
+      const queryFields = query.trim().split(/[\s,]+/);
+      const lastField = queryFields[queryFields.length - 1];
+      if (lastField.toLowerCase() === 'asc') {
+        fields = queryFields.slice(0, -1);
+        direction = -1;
+      } else if (lastField.toLowerCase() === 'desc') {
+        fields = queryFields.slice(0, -1);
+        direction = 1;
+      } else {
+        fields = queryFields;
+        direction = -1;
+      }
+      const orderBy = [];
+      fields.forEach(function (field) {
+        orderBy.push([field, direction]);
+      });
+      return orderBy;
+    } else {
+      return [];
+    }
+  } catch (err) {
+    if (err) console.log(err);
+  }
+};
+exports.createOrderBy = createOrderBy;
 
 const handleError = function (next, str, err) {
   console.log(str, err);
