@@ -34,6 +34,15 @@ Queries are intended to comply with the [ODATA standard](http://docs.oasis-open.
  * [https://resistance-calendar.herokuapp.com/v1/events?$filter=location/postal_code eq '22980'](https://resistance-calendar.herokuapp.com/v1/events?$filter=location/postal_code%20eq%20'22980')
  * [https://resistance-calendar.herokuapp.com/v1/events?$filter=contains(location/locality, 'Savannah')](https://resistance-calendar.herokuapp.com/v1/events?$filter=contains%28location/locality,%20'Savannah'%29)
 
+### Ordering
+
+Again, using the [ODATA standard](http://www.odata.org/documentation/odata-version-2-0/uri-conventions/), ordering is done like so:
+
+* Single field sort: [http://resistance-calendar.herokuapp.com:8000/v1/events?$orderby=start_date](https://resistance-calendar.herokuapp.com/v1/events?$orderby=start_date)
+* Multi field sort: [http://resistance-calendar.herokuapp.com:8000/v1/events?$orderby=start_date asc](https://resistance-calendar.herokuapp.com/v1/events?$orderby=start_date,title)
+* Ascending (the default): [http://resistance-calendar.herokuapp.com:8000/v1/events?$orderby=start_date asc](https://resistance-calendar.herokuapp.com/v1/events?$orderby=start_date%20asc)
+* Descending: [http://resistance-calendar.herokuapp.com:8000/v1/events?$orderby=start_date,title desc](https://resistance-calendar.herokuapp.com/v1/events?$orderby=start_date,title%20desc)
+
 ### Known limitations
 
 Only the first contains clause is used in the following query and a [PR has been filed](https://github.com/jaystack/odata-v4-mongodb/pull/4) to fix:

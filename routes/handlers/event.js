@@ -1,12 +1,13 @@
 const Event = require('../../models/osdi/event');
 const Joi = require('joi');
 const lodash = require('lodash');
-const createFilter = require('odata-v4-mongodb').createFilter;
+const ODATA = require('../../lib/odata');
 
 const OPTS_SCHEMA = Joi.object().keys({
   per_page: Joi.number().integer().min(1).default(25),
   page: Joi.number().integer().min(0).default(0),
   $filter: Joi.string(),
+  $orderby: Joi.string(),
   $top: Joi.number().integer(),
   $inlinecount: Joi.number().integer()
 });
@@ -14,13 +15,15 @@ const OPTS_SCHEMA = Joi.object().keys({
 exports.get = function (opts, next) {
   Joi.validate(opts.query, OPTS_SCHEMA, function (err, query) {
     if (err) handleError(next, 'validating', err);
-    const filter = createFilter(query.$filter);
-    console.log('mongo db filter from odata: ' + JSON.stringify(filter));
+    const filter = ODATA.createFilter(query.$filter);
+    const orderBy = ODATA.createOrderBy(query.$orderby);
+    console.log(`mongo db filter = ${JSON.stringify(filter)} orderBy = ${JSON.stringify(orderBy)}`);
     Event.count(filter)
       .exec(function (err, count) {
         if (err) handleError(next, 'counting events', err);
 
         Event.find(filter)
+          .sort(orderBy)
           .limit(query.per_page)
           .skip(query.per_page * query.page)
           .exec(function (err, osdiEvents) {
