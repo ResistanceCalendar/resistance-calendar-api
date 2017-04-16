@@ -1,6 +1,5 @@
 const Event = require('../../models/osdi/event');
 const Joi = require('joi');
-const lodash = require('lodash');
 const ODATA = require('../../lib/odata');
 
 const OPTS_SCHEMA = Joi.object().keys({
@@ -91,14 +90,7 @@ exports.create = {
     }
   },
   handler: function (req, reply) {
-    let params = {
-      created_date: new Date(),
-      modified_date: new Date()
-    };
-
-    var event = new Event(lodash.merge(req.payload, params));
-
-    return event.save()
+    return new Event(req.payload).save()
       .then(function (e) {
         reply(e);
       })
