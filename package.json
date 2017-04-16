@@ -7,7 +7,7 @@
     "node": "6.10.0"
   },
   "scripts": {
-    "test": "lab",
+    "test": "lab -c",
     "posttest": "semistandard"
   },
   "repository": {
@@ -34,6 +34,7 @@
     "moment": "2.18.0",
     "mongodb": "^2.2.25",
     "mongoose": "^4.8.6",
+    "mockgoose": "5.3.3",
     "odata-v4-mongodb": "0.1.10"
   },
   "devDependencies": {

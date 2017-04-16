@@ -97,14 +97,7 @@ const create = {
     }
   },
   handler: function (req, reply) {
-    let params = {
-      created_date: new Date(),
-      modified_date: new Date()
-    };
-
-    var event = new Event(_.merge(req.payload, params));
-
-    return event.save()
+    return new Event(req.payload).save()
       .then(function (e) {
         reply(e);
       })
