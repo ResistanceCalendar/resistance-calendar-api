@@ -1,6 +1,6 @@
 const Event = require('../../models/osdi/event');
 const Joi = require('joi');
-const lodash = require('lodash');
+const _ = require('lodash');
 const ODATA = require('../../lib/odata');
 
 const OPTS_SCHEMA = Joi.object().keys({
@@ -9,13 +9,19 @@ const OPTS_SCHEMA = Joi.object().keys({
   $filter: Joi.string(),
   $orderby: Joi.string(),
   $top: Joi.number().integer(),
-  $inlinecount: Joi.number().integer()
+  $inlinecount: Joi.number().integer(),
+
+  // No ODATA standard for geometric search
+  distance_coords: Joi.array().items(Joi.number().required(), Joi.number().required()),
+  distance_max: Joi.number().integer()
 });
 
-exports.get = function (opts, next) {
+const get = function (opts, next) {
   Joi.validate(opts.query, OPTS_SCHEMA, function (err, query) {
     if (err) handleError(next, 'validating', err);
-    const filter = ODATA.createFilter(query.$filter);
+    const searchFilter = ODATA.createFilter(query.$filter);
+    const distanceFilter = createProximityFilter('location.location', query.distance_coords, query.distance_max);
+    const filter = _.merge(searchFilter, distanceFilter);
     const orderBy = ODATA.createOrderBy(query.$orderby);
     console.log(`mongo db filter = ${JSON.stringify(filter)} orderBy = ${JSON.stringify(orderBy)}`);
     Event.count(filter)
@@ -43,7 +49,7 @@ exports.get = function (opts, next) {
   });
 };
 
-exports.getOne = function (opts, next) {
+const getOne = function (opts, next) {
   Event.count(opts.params)
     .exec(function (err, count) {
       if (err) handleError(next, 'counting event', err);
@@ -58,7 +64,7 @@ exports.getOne = function (opts, next) {
     });
 };
 
-exports.create = {
+const create = {
   validate: {
     payload: {
       identifiers: [Joi.string()],
@@ -96,7 +102,7 @@ exports.create = {
       modified_date: new Date()
     };
 
-    var event = new Event(lodash.merge(req.payload, params));
+    var event = new Event(_.merge(req.payload, params));
 
     return event.save()
       .then(function (e) {
@@ -109,7 +115,28 @@ exports.create = {
   }
 };
 
+const createProximityFilter = function (fieldName, coord, maxDistance) {
+  const filter = {};
+  if (fieldName && coord && maxDistance) {
+    filter[fieldName] = {
+      $near: {
+        $geometry: {
+          type: 'Point',
+          coordinates: [coord[0], coord[1]]
+        },
+        $maxDistance: maxDistance
+      }
+    };
+  }
+  return filter;
+};
+
 const handleError = function (next, str, err) {
   console.log(str, err);
   next(err);
 };
+
+exports.create = create;
+exports.createProximityFilter = createProximityFilter;
+exports.get = get;
+exports.getOne = getOne;
