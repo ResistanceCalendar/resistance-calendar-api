@@ -1,6 +1,5 @@
 const Event = require('../../models/osdi/event');
 const Joi = require('joi');
-const lodash = require('lodash');
 const ODATA = require('../../lib/odata');
 
 const OPTS_SCHEMA = Joi.object().keys({
