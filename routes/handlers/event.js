@@ -3,7 +3,7 @@ const Joi = require('joi');
 const ODATA = require('../../lib/odata');
 
 const OPTS_SCHEMA = Joi.object().keys({
-  per_page: Joi.number().integer().min(1).default(25),
+  per_page: Joi.number().integer().min(1).default(config.maxPageSize),
   page: Joi.number().integer().min(0).default(0),
   $filter: Joi.string(),
   $orderby: Joi.string(),
