@@ -1,3 +1,4 @@
+const config = require('../../config');
 const Event = require('../../models/osdi/event');
 const Joi = require('joi');
 const ODATA = require('../../lib/odata');
