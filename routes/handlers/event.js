@@ -2,9 +2,10 @@ const Event = require('../../models/osdi/event');
 const Joi = require('joi');
 const lodash = require('lodash');
 const createFilter = require('odata-v4-mongodb').createFilter;
+const config = require('../../config.js');
 
 const OPTS_SCHEMA = Joi.object().keys({
-  per_page: Joi.number().integer().min(1).default(25),
+  per_page: Joi.number().integer().min(1).default(config.maxPageSize),
   page: Joi.number().integer().min(0).default(0),
   $filter: Joi.string(),
   $top: Joi.number().integer(),
