@@ -16,23 +16,34 @@ const moment = require('moment');
  */
 
 exports.register = (plugin, options, next) => {
+  const cacheOpts = {
+    expiresIn: moment.duration(5, 'minute').asMilliseconds(),
+    staleIn: moment.duration(1, 'minute').asMilliseconds(),
+    staleTimeout: 100,
+    generateTimeout: moment.duration(2, 'seconds').asMilliseconds()
+  };
+
   plugin.method('getOSDIEvents', Event.get, {
-    cache: {
-      expiresIn: moment.duration(5, 'minute').asMilliseconds(),
-      staleIn: moment.duration(1, 'minute').asMilliseconds(),
-      staleTimeout: 100,
-      generateTimeout: moment.duration(2, 'seconds').asMilliseconds()
-    },
+    cache: cacheOpts,
     generateKey: function (opts) {
-      return JSON.stringify(opts);
+      return JSON.stringify(opts.query);
+    }
+  });
+
+  plugin.method('getOSDIEvent', Event.getOne, {
+    cache: cacheOpts,
+    generateKey: function (opts) {
+      return JSON.stringify(opts.params);
     }
   });
 
   plugin.route([
     createRoute('GET', '/v1/events', plugin.methods.getOSDIEvents),
     { method: 'POST', path: '/events', config: Event.create },
-    { method: 'GET', path: '/v1', config: EntryPoint.get }
+    { method: 'GET', path: '/v1', config: EntryPoint.get },
+    createRoute('GET', '/v1/events/{_id}', plugin.methods.getOSDIEvent)
   ]);
+
   next();
 };
 
@@ -45,7 +56,7 @@ const createRoute = function (method, path, serverMethod) {
     method: method,
     path: path,
     handler: function (request, reply) {
-      serverMethod(request.query, function (error, result) {
+      serverMethod(request, function (error, result) {
         reply(error || result);
       });
     }

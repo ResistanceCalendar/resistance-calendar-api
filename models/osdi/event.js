@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 const EventSchema = new mongoose.Schema({
   identifiers: ['String'],
   origin_system: { type: String },
-  created_date: { type: Date, required: true },
-  modified_date: { type: Date, required: true },
+  created_date: { type: Date, required: true, default: Date.now() },
+  modified_date: { type: Date, required: true, default: Date.now() },
   // name of the event for administrative display
   name: { type: String },
   // title of event for public display
@@ -28,15 +28,13 @@ const EventSchema = new mongoose.Schema({
   capacity: { type: Number },
   guests_can_invite_others: { type: Boolean },
   facebookLink: { type: String },
-  date: { type: Date, required: true },
   // had to change 'location' to 'loc' bc location is reserved in mongo
   location: {
     type: {
       identifiers: [String],
       origin_system: { type: String },
-      created_date: { type: Date, required: true },
-      modified_date: { type: Date, required: true },
-
+      created_date: { type: Date, required: true, default: Date.now() },
+      modified_date: { type: Date, required: true, default: Date.now() },
       venue: { type: String },
       address_lines: [String],
       locality: { type: String },
@@ -54,6 +52,20 @@ const EventSchema = new mongoose.Schema({
     required: false
   }
 });
+
+const updateModifiedDate = function (next) {
+  const now = new Date();
+  this.modified_date = now;
+  if (this.location) {
+    this.location.modified_date = now;
+  }
+  next();
+};
+
+EventSchema.pre('save', updateModifiedDate)
+  .pre('update', updateModifiedDate)
+  .pre('findOneAndUpdate', updateModifiedDate)
+  .pre('findByIdAndUpdate', updateModifiedDate);
 
 EventSchema.index({ 'location.location': '2dsphere' });
 

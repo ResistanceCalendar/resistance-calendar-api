@@ -1,27 +1,28 @@
 const Event = require('../../models/osdi/event');
 const Joi = require('joi');
-const lodash = require('lodash');
-const createFilter = require('odata-v4-mongodb').createFilter;
-const config = require('../../config.js');
+const ODATA = require('../../lib/odata');
 
 const OPTS_SCHEMA = Joi.object().keys({
   per_page: Joi.number().integer().min(1).default(config.maxPageSize),
   page: Joi.number().integer().min(0).default(0),
   $filter: Joi.string(),
+  $orderby: Joi.string(),
   $top: Joi.number().integer(),
   $inlinecount: Joi.number().integer()
 });
 
 exports.get = function (opts, next) {
-  Joi.validate(opts, OPTS_SCHEMA, function (err, query) {
+  Joi.validate(opts.query, OPTS_SCHEMA, function (err, query) {
     if (err) handleError(next, 'validating', err);
-    const filter = createFilter(query.$filter);
-    console.log('mongo db filter from odata: ' + JSON.stringify(filter));
+    const filter = ODATA.createFilter(query.$filter);
+    const orderBy = ODATA.createOrderBy(query.$orderby);
+    console.log(`mongo db filter = ${JSON.stringify(filter)} orderBy = ${JSON.stringify(orderBy)}`);
     Event.count(filter)
       .exec(function (err, count) {
         if (err) handleError(next, 'counting events', err);
 
         Event.find(filter)
+          .sort(orderBy)
           .limit(query.per_page)
           .skip(query.per_page * query.page)
           .exec(function (err, osdiEvents) {
@@ -39,6 +40,21 @@ exports.get = function (opts, next) {
           });
       });
   });
+};
+
+exports.getOne = function (opts, next) {
+  Event.count(opts.params)
+    .exec(function (err, count) {
+      if (err) handleError(next, 'counting event', err);
+
+      Event.find(opts.params)
+        .exec(function (err, osdiEvent) {
+          if (err) handleError(next, 'finding event', err);
+          const response = osdiEvent;
+
+          next(null, response);
+        });
+    });
 };
 
 exports.create = {
@@ -74,14 +90,7 @@ exports.create = {
     }
   },
   handler: function (req, reply) {
-    let params = {
-      created_date: new Date(),
-      modified_date: new Date()
-    };
-
-    var event = new Event(lodash.merge(req.payload, params));
-
-    return event.save()
+    return new Event(req.payload).save()
       .then(function (e) {
         reply(e);
       })
