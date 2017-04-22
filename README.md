@@ -33,6 +33,8 @@ Queries are intended to comply with the [ODATA standard](http://docs.oasis-open.
 * Filter by nested property (postal_code and locality/city):
  * [https://resistance-calendar.herokuapp.com/v1/events?$filter=location/postal_code eq '22980'](https://resistance-calendar.herokuapp.com/v1/events?$filter=location/postal_code%20eq%20'22980')
  * [https://resistance-calendar.herokuapp.com/v1/events?$filter=contains(location/locality, 'Savannah')](https://resistance-calendar.herokuapp.com/v1/events?$filter=contains%28location/locality,%20'Savannah'%29)
+* Filtering by location is based on coordinates (longitude, latitude) and distance in meters
+ * [http://resistance-calendar.herokuapp.com/v1/events?distance_coords=[-98.435508,29.516496]&distance_max=10000](http://resistance-calendar.herokuapp.com/v1/events?distance_coords=[-98.435508,29.516496]&distance_max=10000)
 
 ### Ordering
 

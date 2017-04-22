@@ -43,10 +43,13 @@ const EventSchema = new mongoose.Schema({
       country: { type: String },
       language: { type: String },
       location: {
+        latitude: { type: Number },
+        longitude: { type: Number },
+        accuracy: {type: String, enum: ['Rooftop', 'Approximate']},
+        // The following two fields are for 2dsphere querying and not OSDI
+        // specific
         type: { type: String },
-        // coordinate are [latitude, longitude]
-        coordinates: [Number],
-        accuracy: {type: String, enum: ['Rooftop', 'Approximate']}
+        coordinates: [Number]
       }
     },
     required: false
