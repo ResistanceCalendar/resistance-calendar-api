@@ -1,3 +1,4 @@
+const cities = require('cities');
 const config = require('../../config');
 const Event = require('../../models/osdi/event');
 const Joi = require('joi');
@@ -13,6 +14,7 @@ const OPTS_SCHEMA = Joi.object().keys({
   $inlinecount: Joi.number().integer(),
 
   // No ODATA standard for geometric search
+  distance_postal_code: Joi.string(),
   distance_coords: Joi.array().items(Joi.number().required(), Joi.number().required()),
   distance_max: Joi.number().integer()
 });
@@ -21,7 +23,12 @@ const get = function (opts, next) {
   Joi.validate(opts.query, OPTS_SCHEMA, function (err, query) {
     if (err) handleError(next, 'validating', err);
     const searchFilter = ODATA.createFilter(query.$filter);
-    const distanceFilter = createProximityFilter('location.location', query.distance_coords, query.distance_max);
+    const distanceFilter = createProximityFilter(
+      'location.location',
+      query.distance_max,
+      query.distance_coords,
+      query.distance_postal_code
+    );
     const filter = _.merge(searchFilter, distanceFilter);
     const orderBy = ODATA.createOrderBy(query.$orderby);
     console.log(`mongo db filter = ${JSON.stringify(filter)} orderBy = ${JSON.stringify(orderBy)}`);
@@ -109,7 +116,16 @@ const create = {
   }
 };
 
-const createProximityFilter = function (fieldName, coord, maxDistance) {
+const createProximityFilter = function (fieldName, maxDistance, coord, postalCode) {
+  if (!coord) {
+    const response = cities.zip_lookup(postalCode);
+    if (response) {
+      coord = [
+        parseFloat(response.longitude),
+        parseFloat(response.latitude)
+      ];
+    }
+  }
   const filter = {};
   if (fieldName && coord && maxDistance) {
     filter[fieldName] = {
