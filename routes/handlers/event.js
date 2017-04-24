@@ -3,6 +3,7 @@ const config = require('../../config');
 const Event = require('../../models/osdi/event');
 const Joi = require('joi');
 const _ = require('lodash');
+const moment = require('moment-timezone');
 const ODATA = require('../../lib/odata');
 
 const OPTS_SCHEMA = Joi.object().keys({
@@ -42,13 +43,14 @@ const get = function (opts, next) {
           .skip(query.per_page * query.page)
           .exec(function (err, osdiEvents) {
             if (err) handleError(next, 'finding events', err);
+            const renderedEvents = osdiEvents.map(render);
             const response = {
               total_pages: Math.ceil(count / query.per_page),
               per_page: query.per_page,
               page: query.page,
               total_records: count,
               _embedded: {
-                'osdi:events': osdiEvents
+                'osdi:events': renderedEvents
               }
             };
             next(null, response);
@@ -65,11 +67,30 @@ const getOne = function (opts, next) {
       Event.find(opts.params)
         .exec(function (err, osdiEvent) {
           if (err) handleError(next, 'finding event', err);
-          const response = osdiEvent;
-
-          next(null, response);
+          next(null, render(osdiEvent));
         });
     });
+};
+
+const render = function (input) {
+  const formatByTimezone = function (date, tz) {
+    if (date) {
+      var utcDate = moment.tz(date, 'UTC');
+      if (tz) {
+        return utcDate.tz(tz).format();
+      } else {
+        return utcDate.format();
+      }
+    } else {
+      return undefined;
+    }
+  };
+
+  const event = input.toJSON();
+  const tz = event.location ? event.location.timezone : undefined;
+  event.start_date = formatByTimezone(event.start_date, tz);
+  event.end_date = formatByTimezone(event.end_date, tz);
+  return event;
 };
 
 const create = {
@@ -147,6 +168,9 @@ const handleError = function (next, str, err) {
 };
 
 exports.create = create;
-exports.createProximityFilter = createProximityFilter;
 exports.get = get;
 exports.getOne = getOne;
+
+// visible for testing
+exports.createProximityFilter = createProximityFilter;
+exports.render = render;
