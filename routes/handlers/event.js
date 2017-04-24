@@ -90,6 +90,9 @@ const render = function (input) {
   const tz = event.location ? event.location.timezone : undefined;
   event.start_date = formatByTimezone(event.start_date, tz);
   event.end_date = formatByTimezone(event.end_date, tz);
+  if (event.location) {
+    delete event.location.timezone;
+  }
   return event;
 };
 
