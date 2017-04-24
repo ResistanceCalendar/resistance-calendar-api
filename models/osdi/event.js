@@ -21,6 +21,9 @@ const EventSchema = new mongoose.Schema({
   status: { type: String, enum: ['confirmed', 'tentatives', 'cancelled'] },
   // instructions for event shown after people have RSVPed. Text and/or HTML
   instructions: { type: String },
+  // Quasi-OSDI: start_date and end_date are persisted as UTC in mongo, and
+  // should be converted on post init to canonical OSDI values using the
+  // location.timezone value if available, otherwise UTC may be used
   start_date: { type: Date },
   end_date: { type: Date },
   add_day_date: { type: Date },
@@ -28,7 +31,6 @@ const EventSchema = new mongoose.Schema({
   capacity: { type: Number },
   guests_can_invite_others: { type: Boolean },
   facebookLink: { type: String },
-  // had to change 'location' to 'loc' bc location is reserved in mongo
   location: {
     type: {
       identifiers: [String],
@@ -50,7 +52,9 @@ const EventSchema = new mongoose.Schema({
         // specific
         type: { type: String },
         coordinates: [Number]
-      }
+      },
+      // Quasi-OSDI: Added in order to allow times to be formatted in localtime
+      timezone: { type: String }
     },
     required: false
   }

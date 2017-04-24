@@ -33,6 +33,7 @@
     "joi": "^10.2.2",
     "lodash": "^4.17.4",
     "moment": "2.18.0",
+    "moment-timezone": "0.5.13",
     "mongodb": "^2.2.25",
     "mongoose": "^4.8.6",
     "mockgoose": "5.3.3",
