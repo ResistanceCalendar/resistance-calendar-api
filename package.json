@@ -37,7 +37,7 @@
     "mongodb": "^2.2.25",
     "mongoose": "^4.8.6",
     "mockgoose": "5.3.3",
-    "odata-v4-mongodb": "0.1.10"
+    "odata-v4-mongodb-rc": "0.1.11"
   },
   "devDependencies": {
     "code": "^4.0.0",
