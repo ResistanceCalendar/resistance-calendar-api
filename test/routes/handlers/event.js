@@ -55,5 +55,6 @@ lab.test('event.render timezone', (done) => {
   const date = new Date(dateString);
   Code.expect('2017-01-01T19:00:00-05:00').to.equal(event.render(new Event({start_date: date, location: {timezone: 'America/New_York'}})).start_date);
   Code.expect('2017-01-01T19:00:00-05:00').to.equal(event.render(new Event({end_date: date, location: {timezone: 'America/New_York'}})).end_date);
+  Code.expect(undefined).to.equal(event.render(new Event({end_date: date, location: {timezone: 'America/New_York'}})).location.timezone);
   done();
 });
