@@ -27,15 +27,28 @@ All endpoints try to be compliant with the [OSDI Events](https://opensupporter.g
 ### Queries
 
 Queries are intended to comply with the [ODATA standard](http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part2-url-conventions/odata-v4.0-errata03-os-part2-url-conventions-complete.html) and use [odata-v4-mongodb](https://github.com/jaystack/odata-v4-mongodb) to do so which implements much, but not all of the standard. Some examples of common queries are:
-* Filter by start date (dates in [ISO8601 format](https://en.wikipedia.org/wiki/ISO_8601)):
- * [https://resistance-calendar.herokuapp.com/v1/events?$filter=start_date gt '2017-03-01'](https://resistance-calendar.herokuapp.com/v1/events?$filter=start_date%20gt%20'2017-03-01')
- * [https://resistance-calendar.herokuapp.com/v1/events?$filter=start_date gt '2017-03-01' and start_date lt '2017-03-02' ](https://resistance-calendar.herokuapp.com/v1/events?$filter=start_date%20gt%20'2017-03-01'%20and%20start_date%20lt%20'2017-03-02')
-* Filter by nested property (postal_code and locality/city):
- * [https://resistance-calendar.herokuapp.com/v1/events?$filter=location/postal_code eq '22980'](https://resistance-calendar.herokuapp.com/v1/events?$filter=location/postal_code%20eq%20'22980')
- * [https://resistance-calendar.herokuapp.com/v1/events?$filter=contains(location/locality, 'Savannah')](https://resistance-calendar.herokuapp.com/v1/events?$filter=contains%28location/locality,%20'Savannah'%29)
-* Filtering by location is based on coordinates (longitude, latitude), or postal code and distance in meters. If both are specified, the coordinates are used as they are the preferred method of location based searching since postal_codes are **only supported for US and may be out of date**.
- * [http://resistance-calendar.herokuapp.com/v1/events?distance_coords=[-98.435508,29.516496]&distance_max=10000](http://resistance-calendar.herokuapp.com/v1/events?distance_coords=[-98.435508,29.516496]&distance_max=10000)
-  * [http://resistance-calendar.herokuapp.com/v1/events?distance_postal_code=94110&distance_max=10000](http://resistance-calendar.herokuapp.com/v1/events?distance_postal_code=94110&distance_max=10000)
+
+#### Start date
+Filter by start date (dates in [ISO8601 format](https://en.wikipedia.org/wiki/ISO_8601)):
+* [https://resistance-calendar.herokuapp.com/v1/events?$filter=start_date gt '2017-03-01'](https://resistance-calendar.herokuapp.com/v1/events?$filter=start_date%20gt%20'2017-03-01')
+* [https://resistance-calendar.herokuapp.com/v1/events?$filter=start_date gt '2017-03-01' and start_date lt '2017-03-02' ](https://resistance-calendar.herokuapp.com/v1/events?$filter=start_date%20gt%20'2017-03-01'%20and%20start_date%20lt%20'2017-03-02')
+
+#### Nested properties
+Filter by nested property (postal_code and locality/city):
+* [https://resistance-calendar.herokuapp.com/v1/events?$filter=location/postal_code eq '22980'](https://resistance-calendar.herokuapp.com/v1/events?$filter=location/postal_code%20eq%20'22980')
+* [https://resistance-calendar.herokuapp.com/v1/events?$filter=contains(location/locality, 'Savannah')](https://resistance-calendar.herokuapp.com/v1/events?$filter=contains%28location/locality,%20'Savannah'%29)
+
+#### Location
+Filtering by location is based on coordinates (longitude, latitude), or postal code and distance in meters. If both are specified, the coordinates are used as they are the preferred method of location based searching since postal_codes are **only supported for US and may be out of date**.
+* [http://resistance-calendar.herokuapp.com/v1/events?distance_coords=[-98.435508,29.516496]&distance_max=10000](http://resistance-calendar.herokuapp.com/v1/events?distance_coords=[-98.435508,29.516496]&distance_max=10000)
+* [http://resistance-calendar.herokuapp.com/v1/events?distance_postal_code=94110&distance_max=10000](http://resistance-calendar.herokuapp.com/v1/events?distance_postal_code=94110&distance_max=10000)
+
+#### Text searching
+This can be done via multiple contains functions combined via and / or logical operators and are not case sensitive.
+* Require both via and:
+ * [https://resistance-calendar.herokuapp.com/v1/events?$filter=contains(name, 'Sessions'%27') and contains(name, 'Fire')](https://resistance-calendar.herokuapp.com/v1/events?$filter=contains%28name,%20%27Sessions%27%29%20and%20contains%28name,%20%27Fire%27%29)
+* Require any via or:
+ * [https://resistance-calendar.herokuapp.com/v1/events?$filter=contains(name, 'Sessions') or contains(name, 'DeVos')](https://resistance-calendar.herokuapp.com/v1/events?$filter=contains%28name,%20%27Sessions%27%29%20or%20contains%28name,%20%27DeVos%27%29)
 
 ### Ordering
 
