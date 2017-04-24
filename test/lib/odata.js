@@ -35,3 +35,13 @@ lab.test('ODATA.createFilter basics', (done) => {
   Code.expect(ODATA.createFilter('contains(a, \'b\')')).to.equal({'a': /b/gi});
   done();
 });
+
+lab.test('ODATA.createFilter combine functions', (done) => {
+  Code.expect({'$and': [{a: /b/gi}, {c: /d/gi}]}).to.equal(
+    ODATA.createFilter('contains(a, \'b\') and contains(c, \'d\')')
+  );
+  Code.expect({'$or': [{a: /b/gi}, {c: /d/gi}]}).to.equal(
+    ODATA.createFilter('contains(a, \'b\') or contains(c, \'d\')')
+  );
+  done();
+});
