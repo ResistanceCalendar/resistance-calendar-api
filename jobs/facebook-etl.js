@@ -16,12 +16,17 @@ module.exports = function (job, done) {
         if (facebookEvent.cover) {
           facebookEvent.cover.source = imageUrl;
         }
-        const osdiEvent = Facebook.toOSDIEvent(facebookEvent);
-        const facebookEventName = `'${osdiEvent.name}' [facebook:${facebookEvent.id}]`;
-        upsertOSDIEvent(osdiEvent, function (err) {
-          if (err) handleError(`upserting ${facebookEventName}`);
-          console.log(`upserted ${facebookEventName}`);
-          callback();
+
+        Facebook.toOSDIEvent(facebookEvent, function (err, osdiEvent) {
+          if (err) {
+            callback(err);
+          }
+          const facebookEventName = `'${osdiEvent.name}' [facebook:${facebookEvent.id}]`;
+          upsertOSDIEvent(osdiEvent, function (err) {
+            if (err) handleError(`upserting ${facebookEventName}`);
+            console.log(`upserted ${facebookEventName}`);
+            callback();
+          });
         });
       });
     };
