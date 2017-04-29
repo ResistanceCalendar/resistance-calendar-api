@@ -1,5 +1,4 @@
-const cities = require('cities');
-const allCities = require('all-the-cities');
+const geo = require('../../lib/geo');
 const config = require('../../config');
 const Event = require('../../models/osdi/event');
 const Joi = require('joi');
@@ -150,26 +149,11 @@ const createProximityFilter = function (fieldName, query) {
 
   if (!coord) {
     if (postalCode) {
-      const response = cities.zip_lookup(postalCode);
-      if (response) {
-        coord = [
-          parseFloat(response.longitude),
-          parseFloat(response.latitude)
-        ];
-      }
+      coord = geo.postalCodeToCoords(postalCode);
     }
 
     if (city) {
-      city = _.upperFirst(city);
-      const response = allCities.filter(function (c) {
-        return c.name.match(city);
-      });
-      if (response) {
-        coord = [
-          parseFloat(response[0].lon),
-          parseFloat(response[0].lat)
-        ];
-      }
+      coord = geo.cityToCoords(city);
     }
   }
   const filter = {};
