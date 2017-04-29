@@ -1,4 +1,5 @@
 const cities = require('cities');
+const allCities = require('all-the-cities');
 const config = require('../../config');
 const Event = require('../../models/osdi/event');
 const Joi = require('joi');
@@ -16,6 +17,7 @@ const OPTS_SCHEMA = Joi.object().keys({
 
   // No ODATA standard for geometric search
   distance_postal_code: Joi.string(),
+  distance_city: Joi.string(),
   distance_coords: Joi.array().items(Joi.number().required(), Joi.number().required()),
   distance_max: Joi.number().integer()
 });
@@ -26,9 +28,7 @@ const get = function (opts, next) {
     const searchFilter = ODATA.createFilter(query.$filter);
     const distanceFilter = createProximityFilter(
       'location.location',
-      query.distance_max,
-      query.distance_coords,
-      query.distance_postal_code
+       query
     );
     const filter = _.merge(searchFilter, distanceFilter);
     const orderBy = ODATA.createOrderBy(query.$orderby);
@@ -140,14 +140,36 @@ const create = {
   }
 };
 
-const createProximityFilter = function (fieldName, maxDistance, coord, postalCode) {
+const createProximityFilter = function (fieldName, query) {
+  if (!query) return {};
+
+  const maxDistance = query.distance_max;
+  let coord = query.distance_coords;
+  const postalCode = query.distance_postal_code;
+  let city = query.distance_city;
+
   if (!coord) {
-    const response = cities.zip_lookup(postalCode);
-    if (response) {
-      coord = [
-        parseFloat(response.longitude),
-        parseFloat(response.latitude)
-      ];
+    if (postalCode) {
+      const response = cities.zip_lookup(postalCode);
+      if (response) {
+        coord = [
+          parseFloat(response.longitude),
+          parseFloat(response.latitude)
+        ];
+      }
+    }
+
+    if (city) {
+      city = _.upperFirst(city);
+      const response = allCities.filter(function (c) {
+        return c.name.match(city);
+      });
+      if (response) {
+        coord = [
+          parseFloat(response[0].lon),
+          parseFloat(response[0].lat)
+        ];
+      }
     }
   }
   const filter = {};
