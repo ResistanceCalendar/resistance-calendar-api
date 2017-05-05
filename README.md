@@ -21,7 +21,7 @@ https://resistance-calendar.herokuapp.com/v1/events
 
 All endpoints try to be compliant with the [OSDI Events](https://opensupporter.github.io/osdi-docs/events.html) standard which exposes two high level endpoints and a few options for paging:
 * https://resistance-calendar.herokuapp.com/v1/events
-* https://resistance-calendar.herokuapp.com/v1/events/{:id} (TODO: #46)
+* https://resistance-calendar.herokuapp.com/v1/events/{:id}
 * https://resistance-calendar.herokuapp.com/v1/events?page=0&per_page=25
 
 ### Queries
