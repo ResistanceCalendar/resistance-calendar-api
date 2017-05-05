@@ -52,12 +52,12 @@ const EventSchema = new mongoose.Schema({
         // specific
         type: { type: String },
         coordinates: [Number]
-      },
-      // Quasi-OSDI: Added in order to allow times to be formatted in localtime
-      timezone: { type: String }
+      }
     },
     required: false
-  }
+  },
+  // Quasi-OSDI: Added in order to allow times to be formatted in localtime
+  timezone: { type: String }
 });
 
 const updateModifiedDate = function (next) {
