@@ -1,6 +1,7 @@
 const Event = require('../models/osdi/event');
 const Facebook = require('../lib/facebook');
 const cloudinary = require('cloudinary');
+const config = require('../config');
 const http = require('http');
 const url = require('url');
 const async = require('async');
@@ -83,6 +84,10 @@ const upsertOSDIEvent = function (osdiEvent, callback) {
  *  });
  */
 const cacheFacebookEventImage = function (facebookEvent, callback) {
+  if (!config.cloudinaryUri) {
+    callback();
+    return;
+  }
   const facebookEventId = `[facebook:${facebookEvent.id}]`;
   if (facebookEvent.cover) {
     const coverId = facebookEvent.cover.id;
