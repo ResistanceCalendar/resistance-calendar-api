@@ -8,6 +8,10 @@ const async = require('async');
 
 require('../lib/database'); // Has side effect of connecting to database
 
+const CLOUDINARY_URL_OPTIONS = {
+  secure: true
+};
+
 module.exports = function (job, done) {
   Facebook.getAllFacebookEvents(function (err, res) {
     if (err) handleError('fetching facebook events', err);
@@ -92,7 +96,7 @@ const cacheFacebookEventImage = function (facebookEvent, callback) {
   if (facebookEvent.cover) {
     const coverId = facebookEvent.cover.id;
     const cloudinaryId = `facebook:${coverId}`;
-    const cloudinaryUrl = cloudinary.url(cloudinaryId);
+    const cloudinaryUrl = cloudinary.url(cloudinaryId, CLOUDINARY_URL_OPTIONS);
     const parsedUrl = url.parse(cloudinaryUrl);
     const requestOptions = {
       method: 'HEAD',
