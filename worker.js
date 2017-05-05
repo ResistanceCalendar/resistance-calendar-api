@@ -7,4 +7,14 @@ require('./lib/database');  // Has side effect of connecting to database
 
 const agenda = new Agenda({db: {address: config.mongoUri}});
 
-facebookEtl();
+agenda.define('facebook-etl', facebookEtl);
+
+agenda.on('start', function (job) {
+  console.log('Job %s starting', job.attrs.name);
+});
+
+agenda.on('ready', function () {
+  console.log('Worker processes ready...');
+  agenda.every('1 hour', 'facebook-etl');
+  agenda.start();
+});
