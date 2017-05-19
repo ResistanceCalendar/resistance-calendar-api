@@ -83,9 +83,9 @@ const upsertOSDIEvent = function (osdiEvent, callback) {
 const cacheFacebookEventImage = function (facebookEvent, callback) {
   const facebookEventId = `[facebook:${facebookEvent.id}]`;
   if (facebookEvent.cover) {
-    const imageId = `facebook:${facebookEvent.cover.id}`;
+    const imagePath = `facebook/${facebookEvent.cover.id}`;
     const imageUrl = facebookEvent.cover.source;
-    image.cacheImage(facebookEventId, imageId, imageUrl, callback);
+    image.cacheImage(facebookEventId, imagePath, imageUrl, callback);
   } else {
     console.log(`${facebookEventId} has no image`);
     callback(null, undefined);
