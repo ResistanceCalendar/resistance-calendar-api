@@ -28,7 +28,6 @@
     "bluebird": "^3.5.0",
     "catbox-memory": "2.0.4",
     "cities": "1.1.2",
-    "cloudinary": "^1.8.0",
     "fbgraph": "^1.4.1",
     "hapi": "^16.1.0",
     "hapi-cors-headers": "1.0.0",
