@@ -86,12 +86,10 @@ const render = function (input) {
   };
 
   const event = input.toJSON();
-  const tz = event.location ? event.location.timezone : undefined;
+  const tz = event.timezone;
   event.start_date = formatByTimezone(event.start_date, tz);
   event.end_date = formatByTimezone(event.end_date, tz);
-  if (event.location) {
-    delete event.location.timezone;
-  }
+  delete event.timezone;
   return event;
 };
 

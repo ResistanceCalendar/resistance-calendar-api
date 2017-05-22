@@ -1,9 +1,7 @@
 const Event = require('../models/osdi/event');
 const Facebook = require('../lib/facebook');
-const cloudinary = require('cloudinary');
-const http = require('http');
-const url = require('url');
 const async = require('async');
+const image = require('../lib/image');
 
 require('../lib/database'); // Has side effect of connecting to database
 
@@ -85,30 +83,9 @@ const upsertOSDIEvent = function (osdiEvent, callback) {
 const cacheFacebookEventImage = function (facebookEvent, callback) {
   const facebookEventId = `[facebook:${facebookEvent.id}]`;
   if (facebookEvent.cover) {
-    const coverId = facebookEvent.cover.id;
-    const cloudinaryId = `facebook:${coverId}`;
-    const cloudinaryUrl = cloudinary.url(cloudinaryId);
-    const parsedUrl = url.parse(cloudinaryUrl);
-    const requestOptions = {
-      method: 'HEAD',
-      host: parsedUrl.host,
-      path: parsedUrl.pathname,
-      agent: false
-    };
-
-    http.request(requestOptions, function (res, err) {
-      if (err) callback(err);
-      if (res.statusCode === 404) {
-        cloudinary.uploader.upload(facebookEvent.cover.source, function (result) {
-          console.log(`${facebookEventId} image saved to ${cloudinaryUrl}`);
-          callback(null, result.secure_url);
-        }, {public_id: cloudinaryId});
-      } else if (res.statusCode === 200) {
-        console.log(`${facebookEventId} image exists at ${cloudinaryUrl}`);
-        facebookEvent.cover.source = cloudinaryUrl;
-        callback(null, cloudinaryUrl);
-      }
-    }).end();
+    const imageId = `facebook:${facebookEvent.cover.id}`;
+    const imageUrl = facebookEvent.cover.source;
+    image.cacheImage(facebookEventId, imageId, imageUrl, callback);
   } else {
     console.log(`${facebookEventId} has no image`);
     callback(null, undefined);

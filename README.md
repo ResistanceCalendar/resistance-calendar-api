@@ -21,7 +21,7 @@ https://resistance-calendar.herokuapp.com/v1/events
 
 All endpoints try to be compliant with the [OSDI Events](https://opensupporter.github.io/osdi-docs/events.html) standard which exposes two high level endpoints and a few options for paging:
 * https://resistance-calendar.herokuapp.com/v1/events
-* https://resistance-calendar.herokuapp.com/v1/events/{:id} (TODO: #46)
+* https://resistance-calendar.herokuapp.com/v1/events/{:id}
 * https://resistance-calendar.herokuapp.com/v1/events?page=0&per_page=25
 
 ### Queries
@@ -42,7 +42,7 @@ Filter by nested property (postal_code and locality/city):
 Filtering by location is based on coordinates (longitude, latitude), city, or postal code and distance in meters. If coordinates are specified, they are used as they are the preferred method of location based searching since postal_codes are **only supported for US and may be out of date**.
 * [http://resistance-calendar.herokuapp.com/v1/events?distance_coords=[-98.435508,29.516496]&distance_max=10000](http://resistance-calendar.herokuapp.com/v1/events?distance_coords=[-98.435508,29.516496]&distance_max=10000)
 * [http://resistance-calendar.herokuapp.com/v1/events?distance_postal_code=94110&distance_max=10000](http://resistance-calendar.herokuapp.com/v1/events?distance_postal_code=94110&distance_max=10000)
-* [http://resistance-calendar.herokuapp.com/v1/events?distance_city=Albuquerque&distance_max=10000](http://resistance-calendar.herokuapp.com/v1/events?distance_postal_code=94110&distance_max=10000)
+* [http://resistance-calendar.herokuapp.com/v1/events?distance_city=Albuquerque&distance_max=10000](http://resistance-calendar.herokuapp.com/v1/events?distance_city=Albuquerque&distance_max=10000)
 
 #### Text searching
 This can be done via multiple contains functions combined via and / or logical operators and are not case sensitive.
@@ -59,11 +59,6 @@ Again, using the [ODATA standard](http://www.odata.org/documentation/odata-versi
 * Multi field sort: [http://resistance-calendar.herokuapp.com/v1/events?$orderby=start_date asc](https://resistance-calendar.herokuapp.com/v1/events?$orderby=start_date,title)
 * Ascending (the default): [http://resistance-calendar.herokuapp.com/v1/events?$orderby=start_date asc](https://resistance-calendar.herokuapp.com/v1/events?$orderby=start_date%20asc)
 * Descending: [http://resistance-calendar.herokuapp.com/v1/events?$orderby=start_date,title desc](https://resistance-calendar.herokuapp.com/v1/events?$orderby=start_date,title%20desc)
-
-### Known limitations
-
-Only the first contains clause is used in the following query and a [PR has been filed](https://github.com/jaystack/odata-v4-mongodb/pull/4) to fix:
- * [https://resistance-calendar.herokuapp.com/v1/events?$filter=contains(title, 'Meetup') or contains(name, 'Meetup') or contains(description, 'Meetup')](https://resistance-calendar.herokuapp.com/v1/events?$filter=contains%28title,%20'Meetup'%29%20or%20contains%28name,%20'Meetup'%29%20or%20contains%28description,%20'Meetup'%29)
 
 ## Run the server
 ```
