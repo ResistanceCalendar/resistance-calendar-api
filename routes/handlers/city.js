@@ -6,7 +6,6 @@ const OPTS_SCHEMA = Joi.object().keys({
 });
 
 const get = function (opts, next) {
-  console.log('opts', opts.query)
   Joi.validate(opts.query, OPTS_SCHEMA, function (err, query) {
     if (err) handleError(next, 'validating', err);
     const coordinates = JSON.parse(opts.query.coords);
