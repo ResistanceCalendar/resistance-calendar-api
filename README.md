@@ -60,6 +60,13 @@ Again, using the [ODATA standard](http://www.odata.org/documentation/odata-versi
 * Ascending (the default): [http://resistance-calendar.herokuapp.com/v1/events?$orderby=start_date asc](https://resistance-calendar.herokuapp.com/v1/events?$orderby=start_date%20asc)
 * Descending: [http://resistance-calendar.herokuapp.com/v1/events?$orderby=start_date,title desc](https://resistance-calendar.herokuapp.com/v1/events?$orderby=start_date,title%20desc)
 
+### Cities endpoit
+
+Intended to find the city based on a set of coordinates
+* [http://resistance-calendar.herokuapp.com/v1/events?distance_coords=[-98.435508,29.516496]&distance_max=10000](http://resistance-calendar.herokuapp.com/v1/cities?coords=[-98.435508,29.516496])
+* Sample response:
+* {"zipcode":"78217","state_abbr":"TX","latitude":"29.543865","longitude":"-98.41755","city":"San Antonio","state":"Texas","distance":3.504331766837608}
+
 ## Run the server
 ```
 cd resistance-calendar-api

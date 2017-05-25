@@ -1,5 +1,6 @@
 const Event = require('./handlers/event');
 const EntryPoint = require('./handlers/entryPoint');
+const City = require('./handlers/city');
 const moment = require('moment');
 
 /**
@@ -40,6 +41,7 @@ exports.register = (plugin, options, next) => {
   plugin.route([
     createRoute('GET', '/v1/events', plugin.methods.getOSDIEvents),
     { method: 'POST', path: '/events', config: Event.create },
+    createRoute('GET', '/v1/cities', City.get),
     { method: 'GET', path: '/v1', config: EntryPoint.get },
     createRoute('GET', '/v1/events/{_id}', plugin.methods.getOSDIEvent)
   ]);
