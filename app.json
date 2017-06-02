@@ -3,6 +3,12 @@
   "scripts": {
   },
   "env": {
+    "AWS_ACCESS_KEY_ID": {
+      "required": true
+    },
+    "AWS_SECRET_ACCESS_KEY": {
+      "required": true
+    },
     "CLOUDINARY_URL": {
       "required": true
     },
@@ -13,6 +19,9 @@
       "required": true
     },
     "PAPERTRAIL_API_TOKEN": {
+      "required": true
+    },
+    "S3_BUCKET_NAME": {
       "required": true
     }
   },
