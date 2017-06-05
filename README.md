@@ -38,18 +38,18 @@ Filter by nested property (postal_code and locality/city):
 * [https://resistance-calendar.herokuapp.com/v1/events?$filter=location/postal_code eq '22980'](https://resistance-calendar.herokuapp.com/v1/events?$filter=location/postal_code%20eq%20'22980')
 * [https://resistance-calendar.herokuapp.com/v1/events?$filter=contains(location/locality, 'Savannah')](https://resistance-calendar.herokuapp.com/v1/events?$filter=contains%28location/locality,%20'Savannah'%29)
 
-#### Location
-Filtering by location is based on coordinates (longitude, latitude), city, or postal code and distance in meters. If coordinates are specified, they are used as they are the preferred method of location based searching since postal_codes are **only supported for US and may be out of date**.
-* [http://resistance-calendar.herokuapp.com/v1/events?distance_coords=[-98.435508,29.516496]&distance_max=10000](http://resistance-calendar.herokuapp.com/v1/events?distance_coords=[-98.435508,29.516496]&distance_max=10000)
-* [http://resistance-calendar.herokuapp.com/v1/events?distance_postal_code=94110&distance_max=10000](http://resistance-calendar.herokuapp.com/v1/events?distance_postal_code=94110&distance_max=10000)
-* [http://resistance-calendar.herokuapp.com/v1/events?distance_city=Albuquerque&distance_max=10000](http://resistance-calendar.herokuapp.com/v1/events?distance_city=Albuquerque&distance_max=10000)
-
 #### Text searching
 This can be done via multiple contains functions combined via and / or logical operators and are not case sensitive.
 * Require both via and:
- * [https://resistance-calendar.herokuapp.com/v1/events?$filter=contains(name, 'Sessions'%27') and contains(name, 'Fire')](https://resistance-calendar.herokuapp.com/v1/events?$filter=contains%28name,%20%27Sessions%27%29%20and%20contains%28name,%20%27Fire%27%29)
+ * [https://resistance-calendar.herokuapp.com/v1/events?$filter=contains(name, 'Sessions') and contains(name, 'Fire')](https://resistance-calendar.herokuapp.com/v1/events?$filter=contains%28name,%20%27Sessions%27%29%20and%20contains%28name,%20%27Fire%27%29)
 * Require any via or:
  * [https://resistance-calendar.herokuapp.com/v1/events?$filter=contains(name, 'Sessions') or contains(name, 'DeVos')](https://resistance-calendar.herokuapp.com/v1/events?$filter=contains%28name,%20%27Sessions%27%29%20or%20contains%28name,%20%27DeVos%27%29)
+
+#### Location
+Searching is not technically ODATA compliant since there is not affordance for radial searches. This implementation filters by location using coordinates (longitude, latitude), city, or postal code and distance in meters. If coordinates are specified, they are used as they are the preferred method of location based searching since postal_codes are **only supported for US and may be out of date**.
+* [http://resistance-calendar.herokuapp.com/v1/events?distance_coords=[-98.435508,29.516496]&distance_max=10000](http://resistance-calendar.herokuapp.com/v1/events?distance_coords=[-98.435508,29.516496]&distance_max=10000)
+* [http://resistance-calendar.herokuapp.com/v1/events?distance_postal_code=94110&distance_max=10000](http://resistance-calendar.herokuapp.com/v1/events?distance_postal_code=94110&distance_max=10000)
+* [http://resistance-calendar.herokuapp.com/v1/events?distance_city=Albuquerque&distance_max=10000](http://resistance-calendar.herokuapp.com/v1/events?distance_city=Albuquerque&distance_max=10000)
 
 ### Ordering
 
@@ -60,7 +60,7 @@ Again, using the [ODATA standard](http://www.odata.org/documentation/odata-versi
 * Ascending (the default): [http://resistance-calendar.herokuapp.com/v1/events?$orderby=start_date asc](https://resistance-calendar.herokuapp.com/v1/events?$orderby=start_date%20asc)
 * Descending: [http://resistance-calendar.herokuapp.com/v1/events?$orderby=start_date,title desc](https://resistance-calendar.herokuapp.com/v1/events?$orderby=start_date,title%20desc)
 
-### Cities endpoit
+### Cities endpoint
 
 Intended to find the city based on a set of coordinates
 * [http://resistance-calendar.herokuapp.com/v1/events?distance_coords=[-98.435508,29.516496]&distance_max=10000](http://resistance-calendar.herokuapp.com/v1/cities?coords=[-98.435508,29.516496])
