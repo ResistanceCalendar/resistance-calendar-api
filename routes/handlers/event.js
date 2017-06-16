@@ -120,6 +120,7 @@ const create = {
       add_day: Joi.boolean(),
       capacity: Joi.number(),
       guests_can_invite_others: Joi.boolean(),
+      is_canceled: Joi.boolean(),
       facebookLink: Joi.string(),
       date: Joi.date(),
       loc: Joi.string()
