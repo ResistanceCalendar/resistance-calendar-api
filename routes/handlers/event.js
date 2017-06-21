@@ -85,7 +85,7 @@ const render = function (input) {
     }
   };
 
-  const event = input.toJSON();
+  const event = input;
   const tz = event.timezone;
   event.start_date = formatByTimezone(event.start_date, tz);
   event.end_date = formatByTimezone(event.end_date, tz);
