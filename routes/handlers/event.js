@@ -71,7 +71,7 @@ const getOne = function (opts, next) {
     });
 };
 
-const render = function (input) {
+const render = function (event) {
   const formatByTimezone = function (date, tz) {
     if (date) {
       var utcDate = moment.tz(date, 'UTC');
@@ -85,7 +85,6 @@ const render = function (input) {
     }
   };
 
-  const event = input.toJSON();
   const tz = event.timezone;
   event.start_date = formatByTimezone(event.start_date, tz);
   event.end_date = formatByTimezone(event.end_date, tz);
