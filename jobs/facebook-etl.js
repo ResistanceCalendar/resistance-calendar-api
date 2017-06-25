@@ -95,23 +95,23 @@ const cacheFacebookEventImage = function (facebookEvent, callback) {
   }
 };
 
-function removeMongoEventsNotFoundInFacebook(facebookEventIds) {
-  Event.find({origin_system: "Facebook"}, function(err, mongoEvents){
-      if (err) handleError(err);
-      const mongoEventIds = mongoEvents.map(function(evt) { return evt.identifiers[0].replace("facebook:", ""); });
-      const itemsToDelete = removeSharedArrayItems(facebookEventIds, mongoEventIds);
-      itemsToDelete.forEach(function(id) {
-        Event.findOneAndRemove({ identifiers: `facebook:${id}` }, function(err, event) {
-          if (err) handleError(err);
-          console.log(`deleted '${event.name}'`);
-        });
+function removeMongoEventsNotFoundInFacebook (facebookEventIds) {
+  Event.find({origin_system: 'Facebook'}, function (err, mongoEvents) {
+    if (err) handleError(err);
+    const mongoEventIds = mongoEvents.map(function (evt) { return evt.identifiers[0].replace('facebook:', ''); });
+    const itemsToDelete = removeSharedArrayItems(facebookEventIds, mongoEventIds);
+    itemsToDelete.forEach(function (id) {
+      Event.findOneAndRemove({ identifiers: `facebook:${id}` }, function (err, event) {
+        if (err) handleError(err);
+        console.log(`deleted '${event.name}'`);
       });
+    });
   });
 }
 
-function removeSharedArrayItems(arr1, arr2) {
-  let largestArray = [],
-      smallestArray = [];
+function removeSharedArrayItems (arr1, arr2) {
+  let largest = [];
+  let smallest = [];
   if (arr1.length >= arr2.length) {
     largest = arr1;
     smallest = arr2;
@@ -120,7 +120,7 @@ function removeSharedArrayItems(arr1, arr2) {
     smallest = arr1;
   }
   let newArray = [];
-  largest.forEach(function(item) {
+  largest.forEach(function (item) {
     if (!smallest.includes(item)) {
       newArray.push(item);
     }
