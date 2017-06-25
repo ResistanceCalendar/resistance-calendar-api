@@ -5,7 +5,7 @@ const image = require('../lib/image');
 
 require('../lib/database'); // Has side effect of connecting to database
 
-module.exports = function (job, done) {
+module.exports.job = function (job, done) {
   Facebook.getAllFacebookEvents(function (err, res) {
     if (err) handleError('fetching facebook events', err);
     const facebookEventIds = [];
@@ -29,7 +29,7 @@ module.exports = function (job, done) {
     // Avoid overwhelming any service by limiting parallelism
     async.eachLimit(res, 5, makeRequest, function (err) {
       if (err) handleError(err);
-      removeMongoEventsNotFoundInFacebook(facebookEventIds);
+      removeEventsNotFoundInFacebook(facebookEventIds);
     });
   });
 };
@@ -95,7 +95,7 @@ const cacheFacebookEventImage = function (facebookEvent, callback) {
   }
 };
 
-function removeMongoEventsNotFoundInFacebook (facebookEventIds) {
+function removeEventsNotFoundInFacebook (facebookEventIds) {
   Event.find({origin_system: 'Facebook'}, function (err, mongoEvents) {
     if (err) handleError(err);
     const mongoEventIds = mongoEvents.map(function (evt) { return evt.identifiers[0].replace('facebook:', ''); });
@@ -128,3 +128,5 @@ function removeSharedArrayItems (arr1, arr2) {
   });
   return newArray;
 }
+
+module.exports.removeEventsNotFoundInFacebook = removeEventsNotFoundInFacebook;

@@ -7,7 +7,7 @@
     "node": "6.10.0"
   },
   "scripts": {
-    "test": "lab -c",
+    "test": "lab",
     "posttest": "semistandard"
   },
   "repository": {
