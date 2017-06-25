@@ -57,18 +57,18 @@ lab.test('event.render no dates', (done) => {
 lab.test('event.render no timezone', (done) => {
   const dateString = '2017-01-02T00:00:00Z';
   const date = new Date(dateString);
-  Code.expect(dateString).to.equal(event.render(new Event({start_date: date})).start_date);
-  Code.expect(dateString).to.equal(event.render(new Event({end_date: date})).end_date);
-  Code.expect(dateString).to.equal(event.render(new Event({start_date: date, location: {}})).start_date);
-  Code.expect(dateString).to.equal(event.render(new Event({end_date: date, location: {}})).end_date);
+  Code.expect(dateString).to.equal(event.render(new Event({start_date: date}).toJSON()).start_date);
+  Code.expect(dateString).to.equal(event.render(new Event({end_date: date}).toJSON()).end_date);
+  Code.expect(dateString).to.equal(event.render(new Event({start_date: date, location: {}}).toJSON()).start_date);
+  Code.expect(dateString).to.equal(event.render(new Event({end_date: date, location: {}}).toJSON()).end_date);
   done();
 });
 
 lab.test('event.render timezone', (done) => {
   const dateString = '2017-01-02T00:00:00.000Z';
   const date = new Date(dateString);
-  Code.expect('2017-01-01T19:00:00-05:00').to.equal(event.render(new Event({start_date: date, timezone: 'America/New_York'})).start_date);
-  Code.expect('2017-01-01T19:00:00-05:00').to.equal(event.render(new Event({end_date: date, timezone: 'America/New_York'})).end_date);
-  Code.expect(undefined).to.equal(event.render(new Event({end_date: date, timezone: 'America/New_York'})).timezone);
+  Code.expect('2017-01-01T19:00:00-05:00').to.equal(event.render(new Event({start_date: date, timezone: 'America/New_York'}).toJSON()).start_date);
+  Code.expect('2017-01-01T19:00:00-05:00').to.equal(event.render(new Event({end_date: date, timezone: 'America/New_York'}).toJSON()).end_date);
+  Code.expect(undefined).to.equal(event.render(new Event({end_date: date, timezone: 'America/New_York'}).toJSON()).timezone);
   done();
 });
