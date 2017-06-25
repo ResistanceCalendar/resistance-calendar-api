@@ -101,9 +101,10 @@ function removeMongoEventsNotFoundInFacebook (facebookEventIds) {
     const mongoEventIds = mongoEvents.map(function (evt) { return evt.identifiers[0].replace('facebook:', ''); });
     const itemsToDelete = removeSharedArrayItems(facebookEventIds, mongoEventIds);
     itemsToDelete.forEach(function (id) {
-      Event.findOneAndRemove({ identifiers: `facebook:${id}` }, function (err, event) {
+      Event.findOneAndRemove({identifiers: `facebook:${id}`}, function (err, event) {
         if (err) handleError(err);
-        console.log(`deleted '${event.name}'`);
+        const facebookEventName = `'${event.name}' [facebook:${id}]`;
+        console.log(`deleted '${facebookEventName}'`);
       });
     });
   });
