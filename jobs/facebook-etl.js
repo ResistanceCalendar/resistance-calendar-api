@@ -8,6 +8,7 @@ require('../lib/database'); // Has side effect of connecting to database
 module.exports = function (job, done) {
   Facebook.getAllFacebookEvents(function (err, res) {
     if (err) handleError('fetching facebook events', err);
+    const facebookEventIds = [];
     const makeRequest = function (facebookEvent, callback) {
       cacheFacebookEventImage(facebookEvent, function (err, imageUrl) {
         if (err) handleError('updating image for facebook event', err);
@@ -15,6 +16,7 @@ module.exports = function (job, done) {
           facebookEvent.cover.source = imageUrl;
         }
         const osdiEvent = Facebook.toOSDIEvent(facebookEvent);
+        facebookEventIds.push(facebookEvent.id);
         const facebookEventName = `'${osdiEvent.name}' [facebook:${facebookEvent.id}]`;
         upsertOSDIEvent(osdiEvent, function (err) {
           if (err) handleError(`upserting ${facebookEventName}`);
@@ -27,6 +29,7 @@ module.exports = function (job, done) {
     // Avoid overwhelming any service by limiting parallelism
     async.eachLimit(res, 5, makeRequest, function (err) {
       if (err) handleError(err);
+      removeMongoEventsNotFoundInFacebook(facebookEventIds);
     });
   });
 };
@@ -91,3 +94,37 @@ const cacheFacebookEventImage = function (facebookEvent, callback) {
     callback(null, undefined);
   }
 };
+
+function removeMongoEventsNotFoundInFacebook (facebookEventIds) {
+  Event.find({origin_system: 'Facebook'}, function (err, mongoEvents) {
+    if (err) handleError(err);
+    const mongoEventIds = mongoEvents.map(function (evt) { return evt.identifiers[0].replace('facebook:', ''); });
+    const itemsToDelete = removeSharedArrayItems(facebookEventIds, mongoEventIds);
+    itemsToDelete.forEach(function (id) {
+      Event.findOneAndRemove({identifiers: `facebook:${id}`}, function (err, event) {
+        if (err) handleError(err);
+        const facebookEventName = `'${event.name}' [facebook:${id}]`;
+        console.log(`deleted '${facebookEventName}'`);
+      });
+    });
+  });
+}
+
+function removeSharedArrayItems (arr1, arr2) {
+  let largest = [];
+  let smallest = [];
+  if (arr1.length >= arr2.length) {
+    largest = arr1;
+    smallest = arr2;
+  } else {
+    largest = arr2;
+    smallest = arr1;
+  }
+  let newArray = [];
+  largest.forEach(function (item) {
+    if (!smallest.includes(item)) {
+      newArray.push(item);
+    }
+  });
+  return newArray;
+}
