@@ -2,7 +2,7 @@ const Joi = require('joi');
 const cities = require('cities');
 
 const OPTS_SCHEMA = Joi.object().keys({
-  coords: Joi.array().items(Joi.number().required(), Joi.number().required()),
+  coords: Joi.array().items(Joi.number().required(), Joi.number().required())
 });
 
 const get = function (opts, next) {
