@@ -64,14 +64,20 @@ const getOne = function (opts, next) {
       if (err) handleError(next, 'counting event', err);
 
       Event.find(opts.params)
-        .exec(function (err, osdiEvent) {
+        .exec(function (err, osdiEvents) {
           if (err) handleError(next, 'finding event', err);
-          next(null, render(osdiEvent));
+          if (osdiEvents.length === 0) {
+            next(null, []);
+          } else if (osdiEvents.length === 1) {
+            next(null, render(osdiEvents[0]));
+          } else {
+            next('Too many events found for unique identifier');
+          }
         });
     });
 };
 
-const render = function (event) {
+const render = function (osdiEvent) {
   const formatByTimezone = function (date, tz) {
     if (date) {
       var utcDate = moment.tz(date, 'UTC');
@@ -85,6 +91,7 @@ const render = function (event) {
     }
   };
 
+  const event = osdiEvent.toJSON();
   const tz = event.timezone;
   event.start_date = formatByTimezone(event.start_date, tz);
   event.end_date = formatByTimezone(event.end_date, tz);
