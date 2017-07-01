@@ -37,7 +37,7 @@ const get = function (opts, next) {
         if (err) handleError(next, 'counting events', err);
 
         Event.find(filter)
-          .lean()
+          .lean(true)
           .sort(orderBy)
           .limit(query.per_page)
           .skip(query.per_page * query.page)
@@ -61,7 +61,7 @@ const get = function (opts, next) {
 
 const getOne = function (opts, next) {
   Event.count(opts.params)
-    .lean()
+    .lean(true)
     .exec(function (err, count) {
       if (err) handleError(next, 'counting event', err);
 
