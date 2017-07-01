@@ -37,7 +37,6 @@ const get = function (opts, next) {
         if (err) handleError(next, 'counting events', err);
 
         Event.find(filter)
-          .lean(true)
           .sort(orderBy)
           .limit(query.per_page)
           .skip(query.per_page * query.page)
@@ -61,7 +60,6 @@ const get = function (opts, next) {
 
 const getOne = function (opts, next) {
   Event.count(opts.params)
-    .lean(true)
     .exec(function (err, count) {
       if (err) handleError(next, 'counting event', err);
 
@@ -79,7 +77,7 @@ const getOne = function (opts, next) {
     });
 };
 
-const render = function (event) {
+const render = function (osdiEvent) {
   const formatByTimezone = function (date, tz) {
     if (date) {
       var utcDate = moment.tz(date, 'UTC');
@@ -93,6 +91,7 @@ const render = function (event) {
     }
   };
 
+  const event = osdiEvent.toJSON();
   const tz = event.timezone;
   event.start_date = formatByTimezone(event.start_date, tz);
   event.end_date = formatByTimezone(event.end_date, tz);
