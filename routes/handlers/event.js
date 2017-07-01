@@ -37,6 +37,7 @@ const get = function (opts, next) {
         if (err) handleError(next, 'counting events', err);
 
         Event.find(filter)
+          .lean()
           .sort(orderBy)
           .limit(query.per_page)
           .skip(query.per_page * query.page)
@@ -60,13 +61,20 @@ const get = function (opts, next) {
 
 const getOne = function (opts, next) {
   Event.count(opts.params)
+    .lean()
     .exec(function (err, count) {
       if (err) handleError(next, 'counting event', err);
 
       Event.find(opts.params)
-        .exec(function (err, osdiEvent) {
+        .exec(function (err, osdiEvents) {
           if (err) handleError(next, 'finding event', err);
-          next(null, render(osdiEvent));
+          if (osdiEvents.length === 0) {
+            next(null, []);
+          } else if (osdiEvents.length === 1) {
+            next(null, render(osdiEvents[0]));
+          } else {
+            next('Too many events found for unique identifier');
+          }
         });
     });
 };
