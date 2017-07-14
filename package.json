@@ -4,7 +4,7 @@
   "description": "API for Resistance Calendar Events",
   "main": "server.js",
   "engines": {
-    "node": "6.10.0"
+    "node": "6.11.1"
   },
   "scripts": {
     "test": "lab",
