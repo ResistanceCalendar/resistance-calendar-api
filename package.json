@@ -38,7 +38,7 @@
     "moment-timezone": "0.5.13",
     "mongodb": "^2.2.25",
     "mongoose": "^4.8.6",
-    "odata-v4-mongodb-rc": "0.1.11",
+    "odata-v4-mongodb": "0.1.11",
     "request": "^2.81.0"
   },
   "devDependencies": {
