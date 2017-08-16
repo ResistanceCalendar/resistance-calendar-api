@@ -5,7 +5,13 @@ const config = require('./config');
 const facebookEtl = require('./jobs/facebook-etl');
 require('./lib/database');  // Has side effect of connecting to database
 
-const agenda = new Agenda({db: {address: config.mongoUri}});
+const agenda = new Agenda({
+  db: {
+    address: config.mongoUri
+  },
+  defaultConcurrency: 1,
+  maxConcurrency: 1
+});
 
 agenda.define('facebook-etl', facebookEtl);
 

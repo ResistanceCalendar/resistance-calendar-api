@@ -3,9 +3,13 @@ const Facebook = require('../lib/facebook');
 const async = require('async');
 const image = require('../lib/image');
 
+const ONE_DAY = 24 * 60 * 60 * 1000;
+
 require('../lib/database'); // Has side effect of connecting to database
 
 module.exports = function (job, done) {
+  console.log(`Facebook ETL Starting`);
+
   Facebook.getAllFacebookEvents(function (err, res) {
     if (err) handleError('fetching facebook events', err);
     const facebookEventIds = [];
@@ -18,18 +22,29 @@ module.exports = function (job, done) {
         const osdiEvent = Facebook.toOSDIEvent(facebookEvent);
         facebookEventIds.push(facebookEvent.id);
         const facebookEventName = `'${osdiEvent.name}' [facebook:${facebookEvent.id}]`;
-        upsertOSDIEvent(osdiEvent, function (err) {
+        upsertOSDIEvent(osdiEvent, function (err, savedEvent) {
           if (err) handleError(`upserting ${facebookEventName}`);
-          console.log(`upserted ${facebookEventName}`);
+          console.log(`upserted ${facebookEventName} - ${savedEvent._id}`);
           callback();
         });
       });
     };
 
+    // Do not update old events
+    const now = new Date();
+    const eventsToUpdate = res.filter(function (facebookEvent) {
+      const eventAnchorDate = facebookEvent.end_date ? facebookEvent.start_date : undefined;
+      const eventEndDatePadded = eventAnchorDate ? ONE_DAY + eventAnchorDate.getTime() : undefined;
+
+      // Events without dates should I guess always be updated for now
+      return !eventEndDatePadded || now < eventEndDatePadded;
+    });
+
     // Avoid overwhelming any service by limiting parallelism
-    async.eachLimit(res, 5, makeRequest, function (err) {
+    async.eachLimit(eventsToUpdate, 5, makeRequest, function (err) {
       if (err) handleError(err);
       removeMongoEventsNotFoundInFacebook(facebookEventIds);
+      console.log(`Facebook ETL Ended`);
     });
   });
 };
@@ -98,7 +113,9 @@ const cacheFacebookEventImage = function (facebookEvent, callback) {
 function removeMongoEventsNotFoundInFacebook (facebookEventIds) {
   Event.find({origin_system: 'Facebook'}, function (err, mongoEvents) {
     if (err) handleError(err);
-    const mongoEventIds = mongoEvents.map(function (evt) { return evt.identifiers[0].replace('facebook:', ''); });
+    const mongoEventIds = mongoEvents.map(function (evt) {
+      return evt.identifiers[0].replace('facebook:', '');
+    });
     const itemsToDelete = removeSharedArrayItems(facebookEventIds, mongoEventIds);
     itemsToDelete.forEach(function (id) {
       Event.findOneAndRemove({identifiers: `facebook:${id}`}, function (err, event) {
