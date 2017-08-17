@@ -67,6 +67,13 @@ Intended to find the city based on a set of coordinates
 * Sample response:
 * {"zipcode":"78217","state_abbr":"TX","latitude":"29.543865","longitude":"-98.41755","city":"San Antonio","state":"Texas","distance":3.504331766837608}
 
+### Created / updated at queries
+
+For ETL based processes, limiting the number of events queried for can be done by created_date and modified)date fields
+
+* [https://resistance-calendar.herokuapp.com/v1/events?$filter=created_date gt '2017-03-01'](https://resistance-calendar.herokuapp.com/v1/events?$filter=created_date%20gt%20'2017-03-01')
+* [https://resistance-calendar.herokuapp.com/v1/events?$filter=created_date gt '2017-03-01'&orderby=created_date](https://resistance-calendar.herokuapp.com/v1/events?$filter=created_date%20gt%20'2017-03-01'&orderby=created_date)
+
 ## Run the server
 ```
 cd resistance-calendar-api

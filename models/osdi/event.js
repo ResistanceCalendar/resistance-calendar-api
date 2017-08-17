@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 const EventSchema = new mongoose.Schema({
   identifiers: ['String'],
   origin_system: { type: String },
-  created_date: { type: Date, required: true, default: Date.now() },
-  modified_date: { type: Date, required: true, default: Date.now() },
+  created_date: { type: Date, required: true },
+  modified_date: { type: Date, required: true },
   // name of the event for administrative display
   name: { type: String },
   // title of event for public display
@@ -60,19 +60,28 @@ const EventSchema = new mongoose.Schema({
   timezone: { type: String }
 });
 
-const updateModifiedDate = function (next) {
+const updateDates = function (next) {
   const now = new Date();
   this.modified_date = now;
   if (this.location) {
     this.location.modified_date = now;
+    if (!this.location.created_date) {
+      this.location.created_date = now;
+    }
+  }
+
+  if (!this.created_date) {
+    this.created_date = now;
   }
   next();
 };
 
-EventSchema.pre('save', updateModifiedDate)
-  .pre('update', updateModifiedDate)
-  .pre('findOneAndUpdate', updateModifiedDate)
-  .pre('findByIdAndUpdate', updateModifiedDate);
+EventSchema
+  .pre('validate', updateDates)
+  .pre('save', updateDates)
+  .pre('update', updateDates)
+  .pre('findOneAndUpdate', updateDates)
+  .pre('findByIdAndUpdate', updateDates);
 
 EventSchema.index({ 'location.location': '2dsphere' });
 
