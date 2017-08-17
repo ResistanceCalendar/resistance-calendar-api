@@ -69,7 +69,7 @@ Intended to find the city based on a set of coordinates
 
 ### Created / updated at queries
 
-For ETL based processes, limiting the number of events queried for can be done by created_date and modified)date fields
+For ETL based processes, limiting the number of events queried for can be done by created_date and modified_date fields
 
 * [https://resistance-calendar.herokuapp.com/v1/events?$filter=created_date gt '2017-03-01'](https://resistance-calendar.herokuapp.com/v1/events?$filter=created_date%20gt%20'2017-03-01')
 * [https://resistance-calendar.herokuapp.com/v1/events?$filter=created_date gt '2017-03-01'&orderby=created_date](https://resistance-calendar.herokuapp.com/v1/events?$filter=created_date%20gt%20'2017-03-01'&orderby=created_date)
