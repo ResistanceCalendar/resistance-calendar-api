@@ -75,7 +75,8 @@ const upsertOSDIEvent = function (osdiEvent, callback) {
     //
     // See http://stackoverflow.com/questions/31775150/node-js-mongodb-the-immutable-field-id-was-found-to-have-been-altered
     //
-    var eventToUpdate = Object.assign(eventToUpdate, osdiEvent._doc);
+    var eventToUpdate = {};
+    eventToUpdate = Object.assign(eventToUpdate, osdiEvent._doc);
     delete eventToUpdate._id;
 
     const options = {upsert: true, new: true};
