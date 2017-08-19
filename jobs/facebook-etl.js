@@ -21,7 +21,7 @@ module.exports = function (job, done) {
         }
         const osdiEvent = Facebook.toOSDIEvent(facebookEvent);
         facebookEventIds.push(facebookEvent.id);
-        const facebookEventName = `'${osdiEvent.name}' [facebook:${facebookEvent.id}]`;
+        const facebookEventName = `[facebook:${facebookEvent.id}]`;
         upsertOSDIEvent(osdiEvent, function (err, savedEvent) {
           if (err) handleError(`upserting ${facebookEventName}`);
           console.log(`upserted ${facebookEventName} - ${savedEvent._id}`);
@@ -120,7 +120,7 @@ function removeMongoEventsNotFoundInFacebook (facebookEventIds) {
     itemsToDelete.forEach(function (id) {
       Event.findOneAndRemove({identifiers: `facebook:${id}`}, function (err, event) {
         if (err) handleError(err);
-        const facebookEventName = `'${event.name}' [facebook:${id}]`;
+        const facebookEventName = `[facebook:${id}]`;
         console.log(`deleted '${facebookEventName}'`);
       });
     });
