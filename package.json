@@ -21,7 +21,6 @@
   },
   "homepage": "https://github.com/ResistanceCalendar/resistance-calendar-api#readme",
   "dependencies": {
-    "agenda": "^0.9.0",
     "all-the-cities": "^2.0.0",
     "async": "^2.3.0",
     "aws-sdk": "2.54.0",
