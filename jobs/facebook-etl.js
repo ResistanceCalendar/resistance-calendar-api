@@ -7,7 +7,7 @@ const ONE_DAY = 24 * 60 * 60 * 1000;
 
 require('../lib/database'); // Has side effect of connecting to database
 
-module.exports = function (job, done) {
+const importEvents = function (job, done) {
   console.log(`Facebook ETL Starting`);
 
   Facebook.getAllFacebookEvents(function (err, res) {
@@ -145,3 +145,5 @@ function removeSharedArrayItems (arr1, arr2) {
   });
   return newArray;
 }
+
+importEvents();
