@@ -20,21 +20,30 @@ lab.test('Facebook.toOSDIEvent status', (done) => {
 });
 
 lab.test('Facebook.toOSDIEvent location', (done) => {
-  const noLat = {location: {latitude: undefined, longitude: -122.42118}};
-  Code.expect(Facebook.toOSDIEvent({id: '00000', place: noLat}).location.location).to.equal(undefined);
+  Code.expect(Facebook.toOSDIEvent({id: '00000', place: {location: {}}}).location.location)
+    .to.equal(undefined);
 
-  const noLong = {location: {latitude: 37.76056, longitude: undefined}};
-  Code.expect(Facebook.toOSDIEvent({id: '00000', place: noLong}).location.location).to.equal(undefined);
+  Code.expect(Facebook.toOSDIEvent({id: '00000', place: {location: {latitude: undefined, longitude: -122.42118}}}).location.location)
+    .to.equal(undefined);
 
-  const latLong = {location: {latitude: 37.76056, longitude: -122.42118}};
-  Code.expect(Facebook.toOSDIEvent({id: '00000', place: latLong}).location.location).to.equal({
-    longitude: -122.42118,
-    latitude: 37.76056,
-    type: 'Point',
-    coordinates: [
-      -122.42118,
-      37.76056
-    ]
-  });
+  Code.expect(Facebook.toOSDIEvent({id: '00000', place: {location: {latitude: null, longitude: -122.42118}}}).location.location)
+    .to.equal(undefined);
+
+  Code.expect(Facebook.toOSDIEvent({id: '00000', place: {location: {latitude: 37.76056, longitude: undefined}}}).location.location)
+    .to.equal(undefined);
+
+  Code.expect(Facebook.toOSDIEvent({id: '00000', place: {location: {latitude: 37.76056, longitude: null}}}).location.location)
+    .to.equal(undefined);
+
+  Code.expect(Facebook.toOSDIEvent({id: '00000', place: {location: {latitude: 37.76056, longitude: -122.42118}}}).location.location)
+    .to.equal({
+      longitude: -122.42118,
+      latitude: 37.76056,
+      type: 'Point',
+      coordinates: [
+        -122.42118,
+        37.76056
+      ]
+    });
   done();
 });
