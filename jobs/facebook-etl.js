@@ -11,7 +11,7 @@ const importEvents = function (job, done) {
   console.log(`Facebook ETL Starting`);
 
   Facebook.getAllFacebookEvents(function (err, res) {
-    if (err) handleError('fetching facebook events', err);
+    if (err) handleError(err, 'fetching facebook events');
     const facebookEventIds = [];
     const makeRequest = function (facebookEvent, callback) {
       cacheFacebookEventImage(facebookEvent, function (err, imageUrl) {
