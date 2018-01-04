@@ -15,7 +15,7 @@ const importEvents = function (job, done) {
     const facebookEventIds = [];
     const makeRequest = function (facebookEvent, callback) {
       cacheFacebookEventImage(facebookEvent, function (err, imageUrl) {
-        if (err) handleError('updating image for facebook event', err);
+        if (err) handleError(err, 'updating image for facebook event');
         if (facebookEvent.cover) {
           facebookEvent.cover.source = imageUrl;
         }
@@ -23,7 +23,7 @@ const importEvents = function (job, done) {
         facebookEventIds.push(facebookEvent.id);
         const facebookEventName = `[facebook:${facebookEvent.id}]`;
         upsertOSDIEvent(osdiEvent, function (err, savedEvent) {
-          if (err) handleError(`upserting ${facebookEventName}`);
+          if (err) handleError(err, `upserting ${facebookEventName}`);
           console.log(`upserted ${facebookEventName} - ${savedEvent._id}`);
           callback();
         });
