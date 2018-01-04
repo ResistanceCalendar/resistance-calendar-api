@@ -10,7 +10,7 @@ require('../lib/database'); // Has side effect of connecting to database
 const importEvents = function (job, done) {
   console.log(`Facebook ETL Starting`);
 
-  Facebook.getAllFacebookEvents(function (err, res) {
+  Facebook.getAllFacebookEvents('IndivisibleSF', function (err, res) {
     if (err) handleError(err, 'fetching facebook events');
     const facebookEventIds = [];
     const makeRequest = function (facebookEvent, callback) {
