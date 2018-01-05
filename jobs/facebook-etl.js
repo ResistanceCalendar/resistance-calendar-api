@@ -19,6 +19,7 @@ const importEvents = function (job, done) {
 
   async.concatLimit(sources['facebook'], 1, getAllFacebookEvents, function (err, res) {
     if (err) handleError(err, 'fetching facebook events');
+    console.log(`${res.length} events downloaded`);
     const facebookEventIds = [];
     const makeRequest = function (facebookEvent, callback) {
       cacheFacebookEventImage(facebookEvent, function (err, imageUrl) {
@@ -46,6 +47,7 @@ const importEvents = function (job, done) {
       // Events without dates should I guess always be updated for now
       return !eventEndDatePadded || now < eventEndDatePadded;
     });
+    console.log(`${res.length} events to update`);
 
     // Avoid overwhelming any service by limiting parallelism
     async.eachLimit(eventsToUpdate, 5, makeRequest, function (err) {
