@@ -3,8 +3,6 @@ const Facebook = require('../lib/facebook');
 const async = require('async');
 const image = require('../lib/image');
 
-const ONE_DAY = 24 * 60 * 60 * 1000;
-
 require('../lib/database'); // Has side effect of connecting to database
 
 const importEvents = function (job, done) {
@@ -31,14 +29,8 @@ const importEvents = function (job, done) {
     };
 
     // Do not update old events
-    const now = new Date();
-    const eventsToUpdate = res.filter(function (facebookEvent) {
-      const eventAnchorDate = facebookEvent.end_date ? facebookEvent.start_date : undefined;
-      const eventEndDatePadded = eventAnchorDate ? ONE_DAY + eventAnchorDate.getTime() : undefined;
-
-      // Events without dates should I guess always be updated for now
-      return !eventEndDatePadded || now < eventEndDatePadded;
-    });
+    const eventsToUpdate = Facebook.filterEventsAfter(new Date(), res);
+    console.log(`updating ${eventsToUpdate.length} of ${res.length} events`);
 
     // Avoid overwhelming any service by limiting parallelism
     async.eachLimit(eventsToUpdate, 5, makeRequest, function (err) {
