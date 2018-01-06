@@ -5,11 +5,19 @@ const image = require('../lib/image');
 
 require('../lib/database'); // Has side effect of connecting to database
 
+const sources = require('../resource/source.json');
+
 const importEvents = function (job, done) {
   console.log(`Facebook ETL Starting`);
 
-  Facebook.getAllFacebookEvents('resistance-calendar', function (err, res) {
+  const getAllFacebookEvents = function (user, callback, pages) {
+    console.log(`Getting events for ${user}`);
+    Facebook.getAllFacebookEvents(user, callback, pages);
+  };
+
+  async.concatLimit(sources['facebook'], 1, getAllFacebookEvents, function (err, res) {
     if (err) handleError(err, 'fetching facebook events');
+    console.log(`${res.length} events downloaded`);
     const facebookEventIds = [];
     const makeRequest = function (facebookEvent, callback) {
       cacheFacebookEventImage(facebookEvent, function (err, imageUrl) {
