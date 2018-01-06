@@ -2,6 +2,7 @@ const Code = require('code');
 const Lab = require('lab');
 const lab = exports.lab = Lab.script();
 const Facebook = require('../../lib/facebook');
+const config = require('../../config.js');
 
 lab.test('Facebook.toOSDIEvent identifiers', (done) => {
   const osdiEvent = Facebook.toOSDIEvent({
@@ -48,7 +49,7 @@ lab.test('Facebook.filterEventsAfter works without date', (done) => {
 
 lab.test('Facebook.filterEventsAfter works with dates after padded date', (done) => {
   const now = new Date();
-  const later = new Date(now.getTime() - ((30 * 24 * 60 * 60 * 1000) - 1));
+  const later = new Date(now.getTime() - (config.eventTimeToLiveMs - 1));
   const events = [{id: '00000', end_time: later}, {id: '00000', start_time: later}];
   Code.expect(Facebook.filterEventsAfter(now, events)).to.equal(events);
   done();
@@ -56,7 +57,7 @@ lab.test('Facebook.filterEventsAfter works with dates after padded date', (done)
 
 lab.test('Facebook.filterEventsAfter works with dates before padded date', (done) => {
   const now = new Date();
-  const beforeNow = new Date(now.getTime() - ((30 * 24 * 60 * 60 * 1000) + 1));
+  const beforeNow = new Date(now.getTime() - (config.eventTimeToLiveMs + 1));
   const events = [{id: '00000', end_time: beforeNow}, {id: '00000', start_time: beforeNow}];
   Code.expect(Facebook.filterEventsAfter(now, events)).to.equal([]);
   done();
