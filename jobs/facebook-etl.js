@@ -20,7 +20,6 @@ const importEvents = function (job, done) {
     console.log(`${res.length} events downloaded`);
     const facebookEventIds = [];
     const makeRequest = function (facebookEvent, callback) {
-      console.log(facebookEvent.start_time + ', ' + facebookEvent.end_time);
       cacheFacebookEventImage(facebookEvent, function (err, imageUrl) {
         if (err) handleError(err, 'updating image for facebook event');
         if (facebookEvent.cover) {
