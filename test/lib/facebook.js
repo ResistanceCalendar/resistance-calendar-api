@@ -38,3 +38,26 @@ lab.test('Facebook.toOSDIEvent location', (done) => {
   });
   done();
 });
+
+lab.test('Facebook.filterEventsAfter works without date', (done) => {
+  const now = new Date();
+  const events = [{id: '00000'}];
+  Code.expect(Facebook.filterEventsAfter(now, events)).to.equal(events);
+  done();
+});
+
+lab.test('Facebook.filterEventsAfter works with dates after padded date', (done) => {
+  const now = new Date();
+  const later = new Date(now.getTime() - ((30 * 24 * 60 * 60 * 1000) - 1));
+  const events = [{id: '00000', end_time: later}, {id: '00000', start_time: later}];
+  Code.expect(Facebook.filterEventsAfter(now, events)).to.equal(events);
+  done();
+});
+
+lab.test('Facebook.filterEventsAfter works with dates before padded date', (done) => {
+  const now = new Date();
+  const beforeNow = new Date(now.getTime() - ((30 * 24 * 60 * 60 * 1000) + 1));
+  const events = [{id: '00000', end_time: beforeNow}, {id: '00000', start_time: beforeNow}];
+  Code.expect(Facebook.filterEventsAfter(now, events)).to.equal([]);
+  done();
+});
