@@ -9,12 +9,14 @@ require('../lib/database'); // Has side effect of connecting to database
 const sources = require('../resource/source.json');
 
 const postNewEvent = function (osdiEvent) {
+  const orgLink = osdiEvent.contact ? ` (<${osdiEvent.contact.additional_info}|${osdiEvent.contact.name}>)` : '';
+  const eventLink = `<${osdiEvent.browser_url}|${osdiEvent.name}>`;
   return request({
     uri: process.env.SLACK_ENDPOINT,
     method: 'POST',
     json: true,
     body: {
-      text: `<${osdiEvent.browser_url}|${osdiEvent.name}>`
+      text: `${eventLink}${orgLink}`
     }
   });
 };

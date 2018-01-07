@@ -57,7 +57,16 @@ const EventSchema = new mongoose.Schema({
     required: false
   },
   // Quasi-OSDI: Added in order to allow times to be formatted in localtime
-  timezone: { type: String }
+  timezone: { type: String },
+  contact: {
+    type: {
+      name: String,
+      email_address: String,
+      phone_number: String,
+      additional_info: String,
+      public: Boolean
+    }
+  }
 });
 
 const updateDates = function (next) {
