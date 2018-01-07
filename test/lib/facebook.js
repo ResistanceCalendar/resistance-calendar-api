@@ -20,6 +20,13 @@ lab.test('Facebook.toOSDIEvent status', (done) => {
   done();
 });
 
+lab.test('Facebook.toOSDIEvent contact', (done) => {
+  Code.expect(Facebook.toOSDIEvent({id: '00000'}).contact).to.equal(undefined);
+  Code.expect(Facebook.toOSDIEvent({id: '00000', 'owner': {'name': 'rc'}}).contact).to.equal({'name': 'rc'});
+  Code.expect(Facebook.toOSDIEvent({id: '00000', 'owner': {'name': 'rc', 'id': '1'}}).contact).to.equal({'name': 'rc', 'additional_info': 'http://facebook.com/1'});
+  done();
+});
+
 lab.test('Facebook.toOSDIEvent location', (done) => {
   Code.expect(Facebook.toOSDIEvent({id: '00000', place: {location: {}}}).location.location)
     .to.equal(undefined);
