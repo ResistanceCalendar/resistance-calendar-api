@@ -82,6 +82,7 @@ const upsertOSDIEvent = function (osdiEvent, callback) {
   if (facebookId) {
     const query = { identifiers: { $in: [facebookId] } };
 
+    // Done for debugging / monitoring / QA purposes
     Event.findOne(query, 'name', function (err, eventFound) {
       if (err) return handleError(err);
       if (!eventFound) {
