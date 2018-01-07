@@ -2,10 +2,22 @@ const Event = require('../models/osdi/event');
 const Facebook = require('../lib/facebook');
 const async = require('async');
 const image = require('../lib/image');
+const request = require('request');
 
 require('../lib/database'); // Has side effect of connecting to database
 
 const sources = require('../resource/source.json');
+
+const postNewEvent = function (osdiEvent) {
+  return request({
+    uri: process.env.SLACK_ENDPOINT,
+    method: 'POST',
+    json: true,
+    body: {
+      text: `<${osdiEvent.browser_url}|${osdiEvent.name}>`
+    }
+  });
+};
 
 const importEvents = function (job, done) {
   console.log(`Facebook ETL Starting`);
@@ -69,6 +81,14 @@ const upsertOSDIEvent = function (osdiEvent, callback) {
 
   if (facebookId) {
     const query = { identifiers: { $in: [facebookId] } };
+
+    // Done for debugging / monitoring / QA purposes
+    Event.findOne(query, 'name', function (err, eventFound) {
+      if (err) return handleError(err);
+      if (!eventFound) {
+        postNewEvent(osdiEvent);
+      }
+    });
 
     // This funny bit of code is necessary to clear the existing _id from the
     // model since the id may not be deterministic at the time of model creation
