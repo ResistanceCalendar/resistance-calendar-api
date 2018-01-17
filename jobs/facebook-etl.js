@@ -51,7 +51,7 @@ const importEvents = function (job, done) {
     };
 
     // Avoid overwhelming any service by limiting parallelism
-    async.eachLimit(eventsToUpdate, 5, makeRequest, function (err) {
+    async.eachLimit(res, 5, makeRequest, function (err) {
       if (err) handleError(err);
       removeMongoEventsNotFoundInFacebook(facebookEventIds);
       console.log(`Facebook ETL Ended`);
