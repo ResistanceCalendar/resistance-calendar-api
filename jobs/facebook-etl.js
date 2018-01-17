@@ -24,12 +24,12 @@ const postNewEvent = function (osdiEvent) {
 const importEvents = function (job, done) {
   console.log(`Facebook ETL Starting`);
 
-  const getAllFacebookEvents = function (user, callback, pages) {
+  const getAllUpcomingFacebookEvents = function (user, callback, pages) {
     console.log(`Getting events for ${user}`);
-    Facebook.getAllFacebookEvents(user, callback, pages);
+    Facebook.getAllUpcomingFacebookEvents(user, callback, pages);
   };
 
-  async.concatLimit(sources['facebook'], 1, getAllFacebookEvents, function (err, res) {
+  async.concatLimit(sources['facebook'], 1, getAllUpcomingFacebookEvents, function (err, res) {
     if (err) handleError(err, 'fetching facebook events');
     console.log(`${res.length} events downloaded`);
     const facebookEventIds = [];
@@ -49,10 +49,6 @@ const importEvents = function (job, done) {
         });
       });
     };
-
-    // Do not update old events
-    const eventsToUpdate = Facebook.filterEventsAfter(new Date(), res);
-    console.log(`updating ${eventsToUpdate.length} of ${res.length} events`);
 
     // Avoid overwhelming any service by limiting parallelism
     async.eachLimit(eventsToUpdate, 5, makeRequest, function (err) {
