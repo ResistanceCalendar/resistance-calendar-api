@@ -4,7 +4,7 @@ const request = require('request');
 require('../lib/database'); // Has side effect of connecting to database
 
 const importEvents = function () {
-  const osdiEndpoint = 'https://now.justicedemocrats.com/api/events';
+  const osdiEndpoint = 'https://map.justicedemocrats.com/api/events';
   console.log(`Loading ${osdiEndpoint}`);
 
   request({url: osdiEndpoint, encoding: null}, function (err, res, body) {
