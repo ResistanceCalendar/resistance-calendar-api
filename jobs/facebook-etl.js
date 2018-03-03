@@ -3,6 +3,7 @@ const Facebook = require('../lib/facebook');
 const async = require('async');
 const image = require('../lib/image');
 const request = require('request');
+const Geo = require('../lib/geo');
 
 require('../lib/database'); // Has side effect of connecting to database
 
@@ -43,13 +44,22 @@ const importEvents = function (job, done) {
           facebookEvent.cover.source = imageUrl;
         }
         const osdiEvent = Facebook.toOSDIEvent(facebookEvent);
-        facebookEventIds.push(facebookEvent.id);
-        const facebookEventName = `[facebook:${facebookEvent.id}]`;
-        upsertOSDIEvent(osdiEvent, function (err, savedEvent) {
-          if (err) handleError(err, `upserting ${facebookEventName}`);
-          console.log(`upserted ${facebookEventName} - ${savedEvent._id}`);
-          callback();
-        });
+        if (!osdiEvent.location && facebookEvent.place.name) {
+          Geo.singleLineAddressToOSDILocation(facebookEvent.place.name, function (err, osdiLocation) {
+            if (err) handleError(err, `converting address to OSDI location for ${facebookEventName}`);
+            if (osdiLocation) {
+              osdiEvent.location = osdiLocation;
+            }
+          });
+
+          facebookEventIds.push(facebookEvent.id);
+          const facebookEventName = `[facebook:${facebookEvent.id}]`;
+          upsertOSDIEvent(osdiEvent, function (err, savedEvent) {
+            if (err) handleError(err, `upserting ${facebookEventName}`);
+            console.log(`upserted ${facebookEventName} - ${savedEvent._id}`);
+            callback();
+          });
+        }
       });
     };
 
