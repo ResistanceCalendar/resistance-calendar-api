@@ -9,9 +9,9 @@ lab.test('Geo.parseAddressStringToOSDILocation', (done) => {
     if (err) Code.fail(err);
 
     Code.expect(osdiLocation.location.type, 'Point');
-    Code.expect(osdiLocation.location.latitude).to.equal(26.619695);
-    Code.expect(osdiLocation.location.longitude).to.equal(-80.05676);
-    Code.expect(osdiLocation.location.coordinates).to.equal([-80.05676, 26.619695]);
+    Code.expect(osdiLocation.location.latitude).to.equal(26.6182);
+    Code.expect(osdiLocation.location.longitude).to.equal(-80.056);
+    Code.expect(osdiLocation.location.coordinates).to.equal([-80.056, 26.6182]);
 
     Code.expect(osdiLocation.postal_code).to.equal('33460');
     Code.expect(osdiLocation.region).to.equal('FL');
