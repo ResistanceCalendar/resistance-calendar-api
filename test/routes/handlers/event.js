@@ -29,7 +29,7 @@ lab.test('event.createProximityFilter ignores postalCode', (done) => {
 
 lab.test('event.createProximityFilter uses postalCode', (done) => {
   Code.expect(event.createProximityFilter('a', {distance_max: 100, distance_postal_code: 94110})).to.equal(
-    {'a': {$near: {$geometry: {'coordinates': [-122.41545, 37.748730], type: 'Point'}, $maxDistance: 100}}}
+    {'a': {$near: {$geometry: {'coordinates': [-122.4153, 37.7509], type: 'Point'}, $maxDistance: 100}}}
   );
   done();
 });
