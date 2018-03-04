@@ -1,5 +1,6 @@
 const Event = require('../models/osdi/event');
 const Facebook = require('../lib/facebook');
+const Geo = require('../lib/geo');
 const async = require('async');
 const image = require('../lib/image');
 const request = require('request');
@@ -42,14 +43,31 @@ const importEvents = function (job, done) {
         if (facebookEvent.cover) {
           facebookEvent.cover.source = imageUrl;
         }
+
         const osdiEvent = Facebook.toOSDIEvent(facebookEvent);
         facebookEventIds.push(facebookEvent.id);
         const facebookEventName = `[facebook:${facebookEvent.id}]`;
-        upsertOSDIEvent(osdiEvent, function (err, savedEvent) {
-          if (err) handleError(err, `upserting ${facebookEventName}`);
-          console.log(`upserted ${facebookEventName} - ${savedEvent._id}`);
-          callback();
-        });
+
+        if (!osdiEvent.location && facebookEvent.place && facebookEvent.place.name) {
+          Geo.parseAddressStringToOSDILocation(facebookEvent.place.name, function (err, osdiLocation) {
+            if (err) handleError(err, `converting address to OSDI location for ${facebookEventName}`);
+            if (osdiLocation) {
+              osdiEvent.location = osdiLocation;
+            }
+
+            upsertOSDIEvent(osdiEvent, function (err, savedEvent) {
+              if (err) handleError(err, `upserting ${facebookEventName}`);
+              console.log(`upserted ${facebookEventName} - ${savedEvent._id}`);
+              callback();
+            });
+          });
+        } else {
+          upsertOSDIEvent(osdiEvent, function (err, savedEvent) {
+            if (err) handleError(err, `upserting ${facebookEventName}`);
+            console.log(`upserted ${facebookEventName} - ${savedEvent._id}`);
+            callback();
+          });
+        }
       });
     };
 
