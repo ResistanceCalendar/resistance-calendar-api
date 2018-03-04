@@ -46,28 +46,17 @@ const importEvents = function (job, done) {
 
         const osdiEvent = Facebook.toOSDIEvent(facebookEvent);
         facebookEventIds.push(facebookEvent.id);
-        const facebookEventName = `[facebook:${facebookEvent.id}]`;
 
-        if (!osdiEvent.location && facebookEvent.place && facebookEvent.place.name) {
-          Geo.parseAddressStringToOSDILocation(facebookEvent.place.name, function (err, osdiLocation) {
-            if (err) handleError(err, `converting address to OSDI location for ${facebookEventName}`);
-            if (osdiLocation) {
-              osdiEvent.location = osdiLocation;
-            }
+        fixFacebookAddress(facebookEvent, osdiEvent, function (err, osdiEvent) {
+          const facebookEventId = `[facebook:${facebookEvent.id}]`;
 
-            upsertOSDIEvent(osdiEvent, function (err, savedEvent) {
-              if (err) handleError(err, `upserting ${facebookEventName}`);
-              console.log(`upserted ${facebookEventName} - ${savedEvent._id}`);
-              callback();
-            });
-          });
-        } else {
+          if (err) handleError(err, `converting address to OSDI location for ${facebookEventId}`);
           upsertOSDIEvent(osdiEvent, function (err, savedEvent) {
-            if (err) handleError(err, `upserting ${facebookEventName}`);
-            console.log(`upserted ${facebookEventName} - ${savedEvent._id}`);
+            if (err) handleError(err, `upserting ${facebookEventId}`);
+            console.log(`upserted ${facebookEventId} - ${savedEvent._id}`);
             callback();
           });
-        }
+        });
       });
     };
 
@@ -146,6 +135,20 @@ const cacheFacebookEventImage = function (facebookEvent, callback) {
   } else {
     console.log(`${facebookEventId} has no image`);
     callback(null, undefined);
+  }
+};
+
+const fixFacebookAddress = function (facebookEvent, osdiEvent, callback) {
+  if (!osdiEvent.location && facebookEvent.place && facebookEvent.place.name) {
+    Geo.parseAddressStringToOSDILocation(facebookEvent.place.name, function (err, osdiLocation) {
+      if (err) callback(err);
+      if (osdiLocation) {
+        osdiEvent.location = osdiLocation;
+      }
+      callback(null, osdiEvent);
+    });
+  } else {
+    callback(null, osdiEvent);
   }
 };
 
