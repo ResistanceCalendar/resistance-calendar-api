@@ -1,32 +1,42 @@
 const Sendemail = require('sendemail');
 const Event = require('../../models/osdi/event');
+const zipcodes = require('zipcodes');
+const _ = require('lodash');
 
 require('../../lib/database'); // Has side effect of connecting to database
 
-const countQuery = Event.count({start_date: {$gte: Date.now()}});
-const missingLocationsQuery = Event
-  .find({location: null, start_date: {$gte: Date.now()}})
-  .sort({start_date: 1});
+const upcomingEventsQuery = Event.find({start_date: {$gte: Date.now()}});
+const PastDay = Date.now() - (24 * 60 * 60 * 1000);
 
-Promise.all([countQuery, missingLocationsQuery]).then(function (values) {
-  const eventCount = values[0];
-  const eventsWithMissingLocations = values[1];
+upcomingEventsQuery
+  .catch(function (err) { if (err) console.error(err); })
+  .then(function (upcomingEvents) {
+    const upcomingEventCount = upcomingEvents.length;
+    const upcomingRSVPCount = _.sumBy(upcomingEvents, function (event) {
+      return event.total_accepted;
+    });
+    const recentlyAddedEvents = upcomingEvents
+      .filter(function (event) {
+        return event.created_date &&
+          event.created_date.getTime() > PastDay;
+      });
 
-  var stats = {
-    email: 'arash.aghevli@gmail.com',
-    eventCount: eventCount,
-    eventsWithMissingLocations: eventsWithMissingLocations,
-    missingLocationCount: eventsWithMissingLocations.length,
-    subject: 'Resistance Calendar this week'
-  };
+    var stats = {
+      email: 'arash.aghevli@gmail.com',
+      subject: 'Resistance Calendar this week',
+      recentlyAddedEvents: _.sortBy(recentlyAddedEvents, (e) => e.start_date),
+      upcomingEventCount: upcomingEventCount,
+      upcomingRSVPCount: upcomingRSVPCount
+    };
 
-  Sendemail.email('welcome', stats, function (err, result) {
-    if (err) return console.error(err);
+    Sendemail.email('summary', stats, function (err, result) {
+      if (err) return console.error(err);
 
-    console.log(' - - - - - - - - - - - - - - - - - - - - -> email sent: ');
-    console.log(result);
-    console.log(' - - - - - - - - - - - - - - - - - - - - - - - - - - - -');
-  });
-});
+      console.log(' - - - - - - - - - - - - - - - - - - - - -> email sent: ');
+      console.log(result);
+      console.log(' - - - - - - - - - - - - - - - - - - - - - - - - - - - -');
+    });
+  })
+  .catch(function (err) { if (err) console.error(err); });
 
-countQuery.exec();
+upcomingEventsQuery.exec();
