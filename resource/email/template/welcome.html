@@ -1,0 +1,12 @@
+<p>Hi Resistors!</p>
+
+<a href='https://resistancecalendar.org'>Resistance Calendar</a> has {{eventCount}} event(s).<br>
+
+{{missingLocationCount}} event(s) with missing locations.
+<ul>
+	{{#each eventsWithMissingLocations}}
+		<li><a href='{{browser_url}}'>{{name}}</a></li>
+	{{/each}}
+</ul>
+
+<p>Happy Resisting!</p>

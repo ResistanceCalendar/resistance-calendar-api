@@ -31,14 +31,15 @@
     "hapi-cors-headers": "1.0.0",
     "joi": "^10.2.2",
     "lodash": "^4.17.4",
-    "parse-address-string": "0.0.3",
     "mockgoose": "5.3.3",
     "moment": "2.18.0",
     "moment-timezone": "0.5.13",
     "mongodb": "^2.2.25",
     "mongoose": "^4.8.6",
     "odata-v4-mongodb": "0.1.11",
+    "parse-address-string": "0.0.3",
     "request": "^2.81.0",
+    "sendemail": "^3.3.0",
     "zipcodes": "6.0.0"
   },
   "devDependencies": {
