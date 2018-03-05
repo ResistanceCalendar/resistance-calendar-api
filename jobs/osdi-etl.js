@@ -27,22 +27,8 @@ const importEvents = function () {
 
       const osdiEvent = new Event(osdiEventJson);
       const query = { identifiers: { $in: [osdiEvent.identifiers[0]] } };
-
-      // This funny bit of code is necessary to clear the existing _id from the
-      // model since the id may not be deterministic at the time of model creation
-      //
-      // See http://stackoverflow.com/questions/31775150/node-js-mongodb-the-immutable-field-id-was-found-to-have-been-altered
-      //
-      var eventToUpdate = {};
-      eventToUpdate = Object.assign(eventToUpdate, osdiEvent._doc);
-      delete eventToUpdate._id;
-
-      const options = {upsert: true, new: true};
-      Event.findOneAndUpdate(query, eventToUpdate, options, function (err, doc) {
-        if (err) {
-          console.log(err);
-          return;
-        }
+      Event.upsert(query, osdiEvent, function (err, doc) {
+        if (err) return console.log(err);
         console.log(`Successfully inserted ${doc.title}`);
       });
     });

@@ -98,20 +98,7 @@ const upsertOSDIEvent = function (osdiEvent, callback) {
       }
     });
 
-    // This funny bit of code is necessary to clear the existing _id from the
-    // model since the id may not be deterministic at the time of model creation
-    //
-    // See http://stackoverflow.com/questions/31775150/node-js-mongodb-the-immutable-field-id-was-found-to-have-been-altered
-    //
-    var eventToUpdate = {};
-    eventToUpdate = Object.assign(eventToUpdate, osdiEvent._doc);
-    delete eventToUpdate._id;
-
-    const options = {upsert: true, new: true};
-    Event.findOneAndUpdate(query, eventToUpdate, options, function (err, doc) {
-      if (err) callback(err);
-      callback(null, doc);
-    });
+    Event.upsert(query, osdiEvent, callback);
   } else {
     callback(`no facebook id found ${osdiEvent.name}`);
   }
