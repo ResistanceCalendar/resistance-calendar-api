@@ -96,10 +96,7 @@ EventSchema.statics.upsert = function (query, osdiEvent, callback) {
   delete eventToUpdate.created_date;
 
   const options = {upsert: true, setDefaultsOnInsert: true, new: true};
-  this.findOneAndUpdate(query, eventToUpdate, options, function (err, doc) {
-    if (err) callback(err);
-    callback(null, doc);
-  });
+  return this.findOneAndUpdate(query, eventToUpdate, options, callback);
 };
 
 EventSchema.index({ 'location.location': '2dsphere' });
