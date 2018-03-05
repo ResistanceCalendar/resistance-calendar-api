@@ -1,0 +1,31 @@
+<p>Hi Resistors!</p>
+
+<a href='https://resistancecalendar.org'>The Resistance Calendar</a> has {{upcomingEventCount}} events scheduled with {{upcomingRSVPCount}} RSVPs!
+<br>
+<br>
+
+<b>{{recentlyAddedEvents.length}} Recently Added Events:</b>
+<table>
+	<th>Date</ht><th>Name</ht><th>RSVP</ht>
+	{{#each recentlyAddedEvents}}
+		<tr>
+			<td><a href='{{browser_url}}'>{{name}}</a></td>
+			<td>{{start_date}}</td>
+			<td>{{total_accepted}}</td>
+		</tr>
+	{{/each}}
+</table>
+
+<b>Events this week:</b>
+<table>
+	<th>Date</ht><th>Name</ht><th>RSVP</ht>
+	{{#each eventsThisWeek}}
+		<tr>
+			<td><a href='{{browser_url}}'>{{name}}</a></td>
+			<td>{{start_date}}</td>
+			<td>{{total_accepted}}</td>
+		</tr>
+	{{/each}}
+</table>
+
+<p>Happy Resisting!</p>
