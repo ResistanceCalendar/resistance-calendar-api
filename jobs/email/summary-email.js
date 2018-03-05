@@ -1,6 +1,5 @@
 const Sendemail = require('sendemail');
 const Event = require('../../models/osdi/event');
-const zipcodes = require('zipcodes');
 const _ = require('lodash');
 
 require('../../lib/database'); // Has side effect of connecting to database
