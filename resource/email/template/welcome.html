@@ -1,12 +1,18 @@
 <p>Hi Resistors!</p>
 
-<a href='https://resistancecalendar.org'>Resistance Calendar</a> has {{eventCount}} event(s).<br>
+<a href='https://resistancecalendar.org'>Resistance Calendar</a> has {{eventCount}} event(s) upcoming!<br>
+<br>
 
 {{missingLocationCount}} event(s) with missing locations.
-<ul>
+<table>
+	<th>Date</ht><th>Name</ht><th>RSVP</ht>
 	{{#each eventsWithMissingLocations}}
-		<li><a href='{{browser_url}}'>{{name}}</a></li>
+		<tr>
+			<td><a href='{{browser_url}}'>{{name}}</a></td>
+			<td>{{start_date}}</td>
+			<td>{{total_accepted}}</td>
+		</tr>
 	{{/each}}
-</ul>
+</table>
 
 <p>Happy Resisting!</p>

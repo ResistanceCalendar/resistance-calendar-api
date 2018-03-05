@@ -3,8 +3,10 @@ const Event = require('../../models/osdi/event');
 
 require('../../lib/database'); // Has side effect of connecting to database
 
-const countQuery = Event.count({});
-const missingLocationsQuery = Event.find({location: null});
+const countQuery = Event.count({start_date: {$gte: Date.now()}});
+const missingLocationsQuery = Event
+  .find({location: null, start_date: {$gte: Date.now()}})
+  .sort({start_date: 1});
 
 Promise.all([countQuery, missingLocationsQuery]).then(function (values) {
   const eventCount = values[0];
