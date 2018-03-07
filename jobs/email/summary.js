@@ -1,5 +1,6 @@
 const Sendemail = require('sendemail');
 const Event = require('../../models/osdi/event');
+const config = require('../../config.js');
 const _ = require('lodash');
 
 require('../../lib/database'); // Has side effect of connecting to database
@@ -28,8 +29,8 @@ upcomingEventsQuery
     });
 
     var stats = {
-      email: 'arash.aghevli@gmail.com',
-      subject: 'Resistance Calendar this week',
+      email: config.emailAddress,
+      subject: 'Resistance Calendar new and upcoming events',
       recentlyAddedEvents: _.sortBy(recentlyAddedEvents, (e) => e.start_date),
       upcomingEventCount: upcomingEventCount,
       upcomingRSVPCount: upcomingRSVPCount,
