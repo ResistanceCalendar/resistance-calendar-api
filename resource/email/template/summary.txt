@@ -1,0 +1,5 @@
+Hi Resistors!
+
+Resistance Calendar has {{eventCount}} event(s).
+
+Happy Resisting!
