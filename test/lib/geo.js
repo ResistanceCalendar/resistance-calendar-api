@@ -19,3 +19,20 @@ lab.test('Geo.parseAddressStringToOSDILocation', (done) => {
     done();
   });
 });
+
+lab.test('Geo.parseAddressStringToOSDILocation fixes missing state', (done) => {
+  const addressLine = '2129 N Western Ave, Chicago, IL 60647-4146, United States';
+  Geo.parseAddressStringToOSDILocation(addressLine, function (err, osdiLocation) {
+    if (err) Code.fail(err);
+
+    Code.expect(osdiLocation.location.type, 'Point');
+    Code.expect(osdiLocation.location.latitude).to.equal(41.9209);
+    Code.expect(osdiLocation.location.longitude).to.equal(-87.7043);
+    Code.expect(osdiLocation.location.coordinates).to.equal([-87.7043, 41.9209]);
+
+    Code.expect(osdiLocation.postal_code).to.equal('60647');
+    Code.expect(osdiLocation.region).to.equal('IL');
+    Code.expect(osdiLocation.address_lines[0]).to.equal('2129 N Western Ave');
+    done();
+  });
+});
