@@ -10,7 +10,7 @@
 	{{#each recentlyAddedEvents}}
 		<tr>
 			<td><a href='https://www.resistancecalendar.org/event/{{id}}'>{{name}}</a></td>
-			<td>{{start_date}}</td>
+			<td style="padding-right: 5px;">{{start_date_string}}</td>
 			<td>{{location.locality}}, {{location.region}}</td>
 			<td>{{total_accepted}}</td>
 		</tr>
@@ -18,14 +18,14 @@
 </table>
 <br>
 <br>
-<b>{{eventsThisWeek.length}} events coming up this week:</b>
+<b>{{upcomingEvents.length}} events upcoming:</b>
 <br>
 <table>
 	<th>Date</ht><th>Name</ht><th>Location</ht><th>RSVP</ht>
-	{{#each eventsThisWeek}}
+	{{#each upcomingEvents}}
 		<tr>
 			<td><a href='https://www.resistancecalendar.org/event/{{id}}'>{{name}}</a></td>
-			<td>{{start_date}}</td>
+			<td style="padding-right: 5px;">{{start_date_string}}</td>
 			<td>{{location.locality}}, {{location.region}}</td>
 			<td>{{total_accepted}}</td>
 		</tr>
