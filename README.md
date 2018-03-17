@@ -88,6 +88,9 @@ mongod --dbpath .db/
 # Always a good idea to install packages
 npm install && npm install semistandard -g
 
+# Run the tests!
+npm test
+
 # Run the service
 npm start
 ```
