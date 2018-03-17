@@ -89,7 +89,7 @@ mongod --dbpath .db/
 npm install && npm install semistandard -g
 
 # Run the service
-npm run
+npm start
 ```
 
 # Technical Architecture
