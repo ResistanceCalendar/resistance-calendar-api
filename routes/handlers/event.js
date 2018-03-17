@@ -5,6 +5,7 @@ const Joi = require('joi');
 const _ = require('lodash');
 const moment = require('moment-timezone');
 const ODATA = require('../../lib/odata');
+const Boom = require('boom')
 
 const OPTS_SCHEMA = Joi.object().keys({
   per_page: Joi.number().integer().min(1).default(config.maxPageSize),
@@ -154,6 +155,9 @@ const createProximityFilter = function (fieldName, query) {
   if (!coord) {
     if (postalCode) {
       coord = geo.postalCodeToCoords(postalCode);
+      if (coord == null) {
+        throw Boom.badRequest('Unknwon ZIP code');
+      }
     }
 
     if (city) {
