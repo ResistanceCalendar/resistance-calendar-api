@@ -1,5 +1,6 @@
 'use strict';
 
+const config = require('./config');
 const Hapi = require('hapi');
 const corsHeaders = require('hapi-cors-headers');
 require('./lib/database'); // contains side effect for initializing database
@@ -12,7 +13,7 @@ const server = new Hapi.Server({
   }]
 });
 server.connection({
-  port: process.env.PORT || 8000
+  port: config.port
 });
 
 // Add the route
