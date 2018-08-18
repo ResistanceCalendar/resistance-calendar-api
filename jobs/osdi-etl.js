@@ -17,6 +17,10 @@ const importEvents = function () {
     events.forEach(function (osdiEventJson) {
       delete osdiEventJson.type;
       const location = osdiEventJson.location ? osdiEventJson.location.location : undefined;
+
+      // Quick clean up for json
+      osdiEventJson.timezone = osdiEventJson.timezone ? osdiEventJson.timezone : osdiEventJson.time_zone;
+
       if (location) {
         location.type = 'Point';
         location.coordinates = [

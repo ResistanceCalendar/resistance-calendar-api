@@ -78,3 +78,25 @@ lab.test('Facebook.filterEventsAfter works with dates before padded date', (done
   Code.expect(Facebook.filterEventsAfter(now, events)).to.equal([]);
   done();
 });
+
+// TODO: Test trailing dashes in address
+lab.test('Facebook.importFacebookCsv', (done) => {
+  Facebook.importFacebookCsv('resource/fb_test.csv', function (err, rows) {
+    if (err) Code.fail(err);
+
+    const rowsWithoutLocation = rows.filter((row) => { return !row.location || !row.location.location; });
+    console.log(rowsWithoutLocation.length);
+    console.log(rows.length);
+
+    Code.expect(rows.length).to.equal(1);
+    const event = rows[0];
+    Code.expect(event.origin_system).to.equal('facebook-csv');
+    Code.expect(event.name).to.equal('Party in the woods');
+    Code.expect(event.title).to.equal('Party in the woods');
+    Code.expect(event.description).to.equal('It\'s a party... in the woods');
+    Code.expect(event.browser_url).to.equal('https://www.facebook.com/events/123456789/');
+    Code.expect(event.contact.additional_info).to.equal('https://www.facebook.com/aabcde/');
+    Code.expect(event.identifiers).to.equal(['facebook:123456789']);
+    done();
+  });
+});
