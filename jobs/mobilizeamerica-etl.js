@@ -35,6 +35,10 @@ const importEvents = function (endpoint) {
         ];
       }
 
+      if (!osdiEventJson.name) {
+        osdiEventJson.name = osdiEventJson.title;
+      }
+
       if (osdiEventJson.timeslots) {
         const individualEvents = osdiEventJson.timeslots.map(function (timeslot) {
           const copy = Object.assign(osdiEventJson);
